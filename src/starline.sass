@@ -94,13 +94,19 @@
     100%
         opacity: 1
 
+.wrapper
+    padding-left: 50%
+    overflow: hidden
+    position: relative
+    height: 420px
+
 .container
     width: 404px
     font-family: Helvetica, Arial, monospace
     font-size: 19px
     line-height: 22px
     color: #00aeef
-    transform: scale(.8)
+    transform: scale(.8) translateX(-50%)
     transform-origin: left top
     .__dark &
         background: #103d4a
@@ -281,14 +287,14 @@
 // TODO: disabled state
 
 .control-icon-arm
-    @include button-icon('car_control_icon_arm_stop')
+    @include button-icon('car_control_icon_arm_start', 1)
     .__arm &
-        @include button-icon('car_control_icon_arm_start', 1)
+        @include button-icon('car_control_icon_arm_stop')
         &.control-center
-            @include button-bg('car_control_btn_central', 1)
+            @include button-bg('car_control_btn_central')
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left', 1)
+            @include button-bg('car_control_btn_left')
 
 .control-icon-ign
     @include button-icon('car_control_icon_ign_start')
