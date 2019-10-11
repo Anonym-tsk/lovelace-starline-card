@@ -1,0 +1,19 @@
+syntax: glob
+tags
+tmp/*
+*.iml
+.idea
+*/.idea
+.DS_Store
+*/.DS_Store
+sftp-config.json
+*/sftp-config.json
+.realsync
+*.orig
+.*.sw?
+node_modules/*
+.ant-targets-build.xml
+/local.properties
+.ant_targets
+package-lock.json
+.sass-cache
