@@ -54,6 +54,7 @@ class StarlineCard extends HTMLElement {
 
     set hass(hass) {
         this._hass = hass;
+        console.warn(hass.language);
         if (!this.$wrapper) {
             this._render();
         }
@@ -88,6 +89,11 @@ class StarlineCard extends HTMLElement {
 
         this.$toast = this.$container.querySelector('.toast');
         this.$gsmLevel = this.$container.querySelector('.gsm-lvl');
+
+        if (this._hass.language === 'ru') {
+            // Ugly?
+            this.$toast.textContent = 'Нажмите дважды для выполнения';
+        }
 
         this._initHandlers();
         setTimeout(() => {
