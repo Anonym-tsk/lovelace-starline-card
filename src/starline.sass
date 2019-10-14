@@ -31,15 +31,11 @@
     @if $on == ''
         &:after
             background: url('assets/' + $name + '_off.png') no-repeat center
-        .__offline &:after
-            background: url('assets/' + $name + '_off_disable.png') no-repeat center !important
         .__dark &:after
             background: url('assets/' + $name + '_off_dark.png') no-repeat center
     @else
         &:after
             background: url('assets/' + $name + '_on.png') no-repeat center
-        .__offline &:after
-            background: url('assets/' + $name + '_on_disable.png') no-repeat center !important
         .__dark &:after
             background: url('assets/' + $name + '_on_dark.png') no-repeat center
 
@@ -95,13 +91,33 @@
         opacity: 1
 
 .wrapper
-    padding-left: 50%
     overflow: hidden
     position: relative
-    height: 420px
+    height: 400px
+    padding: 20px 0 0 50%
+    opacity: 0
+    transition: opacity .1s linear
+    &.__w09
+        height: 450px
+        padding-top: 24px
+        .container
+            transform: scale(.9) translateX(-50%)
+    &.__w08
+        height: 400px
+        padding-top: 20px
+        .container
+            transform: scale(.8) translateX(-50%)
+    &.__w07
+        height: 350px
+        padding-top: 18px
+        .container
+            transform: scale(.7) translateX(-50%)
+    &.__title
+        padding-top: 0 !important
 
 .container
     width: 404px
+    margin: 0 auto
     font-family: Helvetica, Arial, monospace
     font-size: 19px
     line-height: 22px
@@ -111,6 +127,10 @@
     .__dark &
         background: #103d4a
         color: #fff
+
+@media (max-width: 360px)
+    .container
+        transform: scale(.7)
 
 .car
     width: 332px
@@ -211,11 +231,11 @@
         display: block
 
 .car-security
-    display: none
+    display: block
     top: 0
     left: 0
-    .__arm &
-        display: block
+    .__disarm &
+        display: none
 .car-security-1,
 .car-security-5
     width: 39px
@@ -251,8 +271,14 @@
     height: 161px
     position: relative
     margin: 0 auto
-    div
+    > div
         position: absolute
+        .__offline &
+            opacity: .4
+            pointer-events: none
+        &.__inprogress
+            animation: blink 1.2s linear infinite
+            pointer-events: none
     > div:after
         content: ''
         position: absolute
@@ -287,14 +313,14 @@
 // TODO: disabled state
 
 .control-icon-arm
-    @include button-icon('car_control_icon_arm_start', 1)
-    .__arm &
-        @include button-icon('car_control_icon_arm_stop')
+    @include button-icon('car_control_icon_arm_stop')
+    .__disarm &
+        @include button-icon('car_control_icon_arm_start', 1)
         &.control-center
-            @include button-bg('car_control_btn_central')
+            @include button-bg('car_control_btn_central', 1)
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left')
+            @include button-bg('car_control_btn_left', 1)
 
 .control-icon-ign
     @include button-icon('car_control_icon_ign_start')
@@ -347,3 +373,26 @@
     @include info-icon('car_status_cabin_temperature')
 .info-engine
     @include info-icon('car_status_engine_temperature')
+
+.toast
+    position: absolute
+    left: 0
+    right: 0
+    top: 272px
+    background: rgba(0,0,0,.86)
+    color: #fff
+    height: 52px
+    line-height: 52px
+    text-align: center
+    border-radius: 5px
+    font-size: 22px
+    pointer-events: none
+    transition: opacity .2s ease-in-out
+    opacity: 0
+
+.gsm-lvl
+    position: absolute
+    top: 0
+    right: 0
+    width: 36px
+    height: 36px
