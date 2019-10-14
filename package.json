@@ -1,5 +1,5 @@
 {
-  "name": "homeassistant-starline-card",
+  "name": "lovelace-starline-card",
   "version": "1.0.0",
   "description": "Custom Lovelace Card for StarLine integration",
   "scripts": {
@@ -7,14 +7,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Anonym-tsk/homeassistant-starline-card.git"
+    "url": "git+https://github.com/Anonym-tsk/lovelace-starline-card.git"
   },
   "author": "@anonym.tsk",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Anonym-tsk/homeassistant-starline-card/issues"
+    "url": "https://github.com/Anonym-tsk/lovelace-starline-card/issues"
   },
-  "homepage": "https://github.com/Anonym-tsk/homeassistant-starline-card#readme",
+  "homepage": "https://github.com/Anonym-tsk/lovelace-starline-card/blob/master/README.md",
   "devDependencies": {
     "css-b64-images": "^0.2.5",
     "fs-extra": "^8.1.0",
