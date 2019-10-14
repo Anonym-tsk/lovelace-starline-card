@@ -231,6 +231,39 @@
     .__key &
         display: block
 
+.car-hbrake
+    display: none
+    top: 85px
+    left: 117px
+    width: 49px
+    height: 31px
+    @include car-bg('car_indication_parking')
+    @include car-bg-alarm('car_indication_parking', 'hbrake')
+
+    .__hbrake &
+        display: block
+
+.car-shock
+    position: absolute
+    top: 0
+    right: 65px
+    width: 46px
+    height: 40px
+    background-size: contain !important
+    animation: blink 1.2s linear infinite
+    @include car-bg-alarm('car_indication_sensor_shock', 'shock_l')
+    @include car-bg-alarm('car_indication_sensor_shock', 'shock_h')
+
+.car-tilt
+    position: absolute
+    top: 0
+    left: 60px
+    width: 46px
+    height: 40px
+    background-size: contain !important
+    animation: blink 1.2s linear infinite
+    @include car-bg-alarm('car_indication_sensor_tilt', 'tilt')
+
 .car-security
     display: block
     top: 0
@@ -314,7 +347,6 @@
 .control-right
     left: 266px
     transform: scaleX(-1)
-// TODO: disabled state
 
 .control-icon-arm
     @include button-icon('car_control_icon_arm_stop')

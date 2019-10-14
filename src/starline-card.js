@@ -144,9 +144,8 @@ class StarlineCard extends HTMLElement {
         this.$container.classList.toggle('__smoke', this._getState('engine'));
         this.$container.classList.toggle('__out', this._getState('out'));
         this.$container.classList.toggle('__webasto', this._getState('webasto'));
+        this.$container.classList.toggle('__hbrake', this._getState('hbrake'));
         this.$container.classList.toggle('__offline', !this._getAttr('gsm_lvl', 'online'));
-
-        // TODO: Нарисовать состояние датчиков удара и наклона, ручного тормоза
     }
 
     _setInfo() {
