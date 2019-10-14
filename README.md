@@ -4,7 +4,7 @@ Special card for Home Assistant [StarLine integration](https://www.home-assistan
 
 ## Installation
 
-1. Download the `starline-card.js` from the [latest release](https://github.com/Anonym-tsk/homeassistant-starline-card/releases/latest) and store it in your `configuration/www` folder.
+1. Download the `starline-card.js` from the [latest release](https://github.com/Anonym-tsk/lovelace-starline-card/releases/latest) and store it in your `configuration/www` folder.
 2. Configure Lovelace to load the card:
 
 ```yaml
