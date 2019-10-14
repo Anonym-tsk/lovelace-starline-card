@@ -54,7 +54,6 @@ class StarlineCard extends HTMLElement {
 
     set hass(hass) {
         this._hass = hass;
-        console.warn(hass);
         if (!this.$wrapper) {
             this._render();
         }
@@ -121,7 +120,6 @@ class StarlineCard extends HTMLElement {
     }
 
     _setDarkMode() {
-        // TODO: Починить отъехавшие картинки
         this.$wrapper.classList.toggle('__dark', this._config.dark);
     }
 

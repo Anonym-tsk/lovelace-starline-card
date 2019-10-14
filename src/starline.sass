@@ -125,7 +125,6 @@
     transform: scale(.8) translateX(-50%)
     transform-origin: left top
     .__dark &
-        background: #103d4a
         color: #fff
 
 @media (max-width: 360px)
@@ -166,7 +165,7 @@
     @include car-bg('car_indication_bg_guard')
 
 .car-hood
-    left: 91px
+    left: 90px
     top: 53px
     width: 103px
     height: 23px
@@ -332,6 +331,7 @@
     width: 138px
     height: 124px
     @include button-bg('car_control_btn_left')
+    background-size: contain !important
     &:after
         background-position: 22px 33px !important
 
@@ -339,7 +339,7 @@
     top: 0
     left: 121px
     width: 162px
-    height: 163px
+    height: 162px
     @include button-bg('car_control_btn_central')
     &:after
         background-position: 41px 53px !important
@@ -426,6 +426,9 @@
     pointer-events: none
     transition: opacity .2s ease-in-out
     opacity: 0
+    .__dark &
+        background: rgba(255,255,255,.9)
+        color: #444
 
 .gsm-lvl
     position: absolute
