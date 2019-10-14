@@ -2,7 +2,7 @@
 
 Special card for Home Assistant [StarLine integration](https://www.home-assistant.io/integrations/starline/)
 
-![White example](/screenshots/white.png) ![Dark example](/screenshots/dark.png)
+<img src='https://raw.githubusercontent.com/Anonym-tsk/lovelace-starline-card/master/screenshots/white.png' /> <img src='https://raw.githubusercontent.com/Anonym-tsk/lovelace-starline-card/master/screenshots/dark.png' />
 
 ## Installation
 
