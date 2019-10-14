@@ -64,3 +64,9 @@ entities:
   trunk: binary_sensor.audi_trunk
   webasto: switch.audi_webasto
 ```
+
+---
+
+Enjoy my work? Help me out for a couple of :beers: or a :coffee:!
+
+[![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://www.buymeacoffee.com/qcDXvboAE)
