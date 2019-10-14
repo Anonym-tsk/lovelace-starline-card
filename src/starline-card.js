@@ -34,6 +34,9 @@ class StarlineCard extends HTMLElement {
         this.$wrapper = null;
         this.$container = null;
 
+        this.$car = null;
+        this.$security = null;
+
         this.$controls = null;
         this.$controlLeft = null;
         this.$controlCenter = null;
@@ -44,10 +47,14 @@ class StarlineCard extends HTMLElement {
         this.$infoBattery = null;
         this.$infoInner = null;
         this.$infoEngine = null;
+
+        this.$toast = null;
+        this.$gsmLevel = null;
     }
 
     set hass(hass) {
         this._hass = hass;
+        console.warn(hass);
         if (!this.$wrapper) {
             this._render();
         }
@@ -64,14 +71,17 @@ class StarlineCard extends HTMLElement {
         this.appendChild(card);
 
         this.$wrapper = card.querySelector('.wrapper');
-        this.$container = card.querySelector('.container');
+        this.$container = this.$wrapper.querySelector('.container');
 
-        this.$controls = card.querySelector('.controls');
+        this.$car = this.$wrapper.querySelector('.car-cnt');
+        this.$security = this.$wrapper.querySelector('.car-security');
+
+        this.$controls = this.$wrapper.querySelector('.controls');
         this.$controlLeft = this.$controls.querySelector('.control-left');
         this.$controlCenter = this.$controls.querySelector('.control-center');
         this.$controlRight = this.$controls.querySelector('.control-right');
 
-        this.$info = card.querySelector('.info');
+        this.$info = this.$wrapper.querySelector('.info');
         this.$infoBalance = this.$info.querySelector('.info-balance');
         this.$infoBattery = this.$info.querySelector('.info-battery');
         this.$infoInner = this.$info.querySelector('.info-inner');
@@ -157,9 +167,19 @@ class StarlineCard extends HTMLElement {
     }
 
     _initHandlers() {
-        this.$controlLeft.addEventListener('click', this._onClick.bind(this, 'left', this.$controlLeft));
-        this.$controlCenter.addEventListener('click', this._onClick.bind(this, 'center', this.$controlCenter));
-        this.$controlRight.addEventListener('click', this._onClick.bind(this, 'right', this.$controlRight));
+        this.$infoBalance.addEventListener('click', () => this._moreInfo('balance'));
+        this.$infoBattery.addEventListener('click', () => this._moreInfo('battery'));
+        this.$infoInner.addEventListener('click', () => this._moreInfo('ctemp'));
+        this.$infoEngine.addEventListener('click', () => this._moreInfo('etemp'));
+
+        this.$car.addEventListener('click', () => this._moreInfo('engine'));
+        this.$security.addEventListener('click', () => this._moreInfo('security'));
+        this.$gsmLevel.addEventListener('click', () => this._moreInfo('gsm_lvl'));
+
+        this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
+        this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
+        this.$controlRight.addEventListener('click', () => this._onClick('right', this.$controlRight));
+
         window.addEventListener('resize', this._setSize.bind(this));
     }
 
@@ -249,6 +269,23 @@ class StarlineCard extends HTMLElement {
         } else {
             classList.add('__w07');
         }
+    }
+
+    _moreInfo(entity) {
+        this._fireEvent('hass-more-info', {
+            entityId: this._config.entities[entity]
+        });
+    }
+
+    _fireEvent(type, detail) {
+        const event = new Event(type, {
+            bubbles: true,
+            cancelable: false,
+            composed: true
+        });
+        event.detail = detail || {};
+        this.$wrapper.dispatchEvent(event);
+        return event;
     }
 
     setConfig(config) {

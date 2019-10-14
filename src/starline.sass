@@ -143,6 +143,7 @@
 .car-cnt
     top: 67px
     left: 24px
+    cursor: pointer
 
 .car-door
     display: none
@@ -234,6 +235,7 @@
     display: block
     top: 0
     left: 0
+    cursor: pointer
     .__disarm &
         display: none
 .car-security-1,
@@ -273,12 +275,14 @@
     margin: 0 auto
     > div
         position: absolute
+        cursor: pointer
         .__offline &
             opacity: .4
             pointer-events: none
         &.__inprogress
-            animation: blink 1.2s linear infinite
             pointer-events: none
+            &:after
+                animation: blink 1.2s linear infinite
     > div:after
         content: ''
         position: absolute
@@ -360,6 +364,7 @@
     text-align: center
     > *
         position: relative
+        cursor: pointer
         float: left
         width: 25%
         height: 20px
@@ -392,6 +397,7 @@
 
 .gsm-lvl
     position: absolute
+    cursor: pointer
     top: 0
     right: 0
     width: 36px

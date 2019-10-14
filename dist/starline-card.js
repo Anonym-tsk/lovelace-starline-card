@@ -34,6 +34,9 @@ class StarlineCard extends HTMLElement {
         this.$wrapper = null;
         this.$container = null;
 
+        this.$car = null;
+        this.$security = null;
+
         this.$controls = null;
         this.$controlLeft = null;
         this.$controlCenter = null;
@@ -44,10 +47,14 @@ class StarlineCard extends HTMLElement {
         this.$infoBattery = null;
         this.$infoInner = null;
         this.$infoEngine = null;
+
+        this.$toast = null;
+        this.$gsmLevel = null;
     }
 
     set hass(hass) {
         this._hass = hass;
+        console.warn(hass);
         if (!this.$wrapper) {
             this._render();
         }
@@ -108,7 +115,7 @@ class StarlineCard extends HTMLElement {
 
 .car * { position: absolute; }
 
-.car-cnt { top: 67px; left: 24px; }
+.car-cnt { top: 67px; left: 24px; cursor: pointer; }
 
 .car-door { display: none; top: 28px; left: 15px; width: 63px; height: 91px; background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAD8AAABbBAMAAAA2FECgAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAwUExURUdwTC+t5C6s4i6x4y+u5C+u5S+u5C+u5C+t5C+u5C+u5C+u5C+u5C+t5Dyp0zCu5O2Y2AAAAAAPdFJOUwDKIRGYL7NmQ/RXfejYBpsVG7wAAAJFSURBVEjHrZY9S1tRGMeP1Rg1NhgR1wRtt0JDM4mD+QaKEHAomHaQbgkUmtF2ECwUWgoFweG6iVkUHB0UnEX9ANY76uZrY2Laf++9uUnOc8/L06H/6Sbnd+953s8R4p80tOepUqlWV1cK8xkNMAVJzV0VWAYhNhTgnAC4nousDwA7ydyricLCanXzgwOsuxToA1qWBf9Pe8QoBS7xS/75DKh3zfBf2kaNvPAFuCOblHBLgN4S3STpoEj3THi+Sp5ceE5E/NoC1ogTiuOeJ107h9FUQvcakuGLuFOA2LH0ieWIl4FeSFaUcKMCMQfv2s/HONCUwOe3HRbRMLQc6cQyroZByeVHK/AUyFqBGU2ciL7SalC1j0c7MKsLJC3pB+t6ErpIy0EH/tj7EjjM+ZoI9bww33qYzLlh/Vl0IkS/bb3uJaHHBvgRGrQBxSAVZv3OBiVr1o9WrlBze30vPylAOZwu+bAlnch60A3ufggG5U31M8x2+wvRSVTPhNlGo1O9RI12OQBHZ6ep8aV0BMjrN+7OOpcBvoeWpU1AmQGuBQPcc0CeAeoZBuhOJQNwI41ZYy1ZgTIHZKXetYbJBDzK40GnhunEUwLtHzc63cojSqdvQpr1Oh3IU9DQ9m3pm3eEDFo70M8BfRyQ4IAhDohxQJKLQ7TpVaDEhFpfEFeCybd8oXhpbwtDtuQzpoepSX0yaoKJtXwQPrE3d3A9YIBZZgtt65CzdtHeWf41yVoP+rIlV444Y6MmEM0yPZ3fpKjG3ov/qL/LzLcyRWLc5wAAAABJRU5ErkJggg==") no-repeat center; }
 
@@ -174,7 +181,7 @@ class StarlineCard extends HTMLElement {
 
 .__key .car-key { display: block; }
 
-.car-security { display: block; top: 0; left: 0; }
+.car-security { display: block; top: 0; left: 0; cursor: pointer; }
 
 .__disarm .car-security { display: none; }
 
@@ -208,11 +215,13 @@ class StarlineCard extends HTMLElement {
 
 .controls { width: 404px; height: 161px; position: relative; margin: 0 auto; }
 
-.controls > div { position: absolute; }
+.controls > div { position: absolute; cursor: pointer; }
 
 .__offline .controls > div { opacity: .4; pointer-events: none; }
 
-.controls > div.__inprogress { animation: blink 1.2s linear infinite; pointer-events: none; }
+.controls > div.__inprogress { pointer-events: none; }
+
+.controls > div.__inprogress:after { animation: blink 1.2s linear infinite; }
 
 .controls > div:after { content: ''; position: absolute; display: block; top: 0; bottom: 0; left: 0; right: 0; }
 
@@ -316,7 +325,7 @@ class StarlineCard extends HTMLElement {
 
 .info { width: 404px; height: 95px; position: relative; margin: 0 auto; text-align: center; }
 
-.info > * { position: relative; float: left; width: 25%; height: 20px; padding-top: 75px; }
+.info > * { position: relative; cursor: pointer; float: left; width: 25%; height: 20px; padding-top: 75px; }
 
 .info-balance { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAuBAMAAACMkMmDAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUdwTC2u5iyv5i2v5i2v5iyv5iyv5iyv5iyv5iyv5i2v5kysCBcAAAAKdFJOUwC6xGkygZjbFz621qezAAAAuklEQVQ4y2NgGMqAbRUWsABVTRZhNayrCKuJIqwGuzGoaqIIq8FhDIqaKMJqcBmDrAbJGOUpLiAwtQpNDZIxi1HFFmAzxgBVcAEWYxYh7GdHUWOFULMU7BgXB6AoM4oaLQzvKABFWYhQw0FrNYuNgaBqVVkaEOBSswLEr8ISFzRQs4QINYvR0gs2NcsRatpxhk8CXI0UTjULG6CCjatwh/PCYFAwGgeuWkUgLvD6a8SpSRTECQQGY8kNAL3NG8rLBId3AAAAAElFTkSuQmCC") no-repeat center; }
 
@@ -336,7 +345,7 @@ class StarlineCard extends HTMLElement {
 
 .toast { position: absolute; left: 0; right: 0; top: 272px; background: rgba(0, 0, 0, 0.86); color: #fff; height: 52px; line-height: 52px; text-align: center; border-radius: 5px; font-size: 22px; pointer-events: none; transition: opacity .2s ease-in-out; opacity: 0; }
 
-.gsm-lvl { position: absolute; top: 0; right: 0; width: 36px; height: 36px; }
+.gsm-lvl { position: absolute; cursor: pointer; top: 0; right: 0; width: 36px; height: 36px; }
 `;
         card.innerHTML = `<div class="wrapper">
     <div class="container">
@@ -382,14 +391,17 @@ class StarlineCard extends HTMLElement {
         this.appendChild(card);
 
         this.$wrapper = card.querySelector('.wrapper');
-        this.$container = card.querySelector('.container');
+        this.$container = this.$wrapper.querySelector('.container');
 
-        this.$controls = card.querySelector('.controls');
+        this.$car = this.$wrapper.querySelector('.car-cnt');
+        this.$security = this.$wrapper.querySelector('.car-security');
+
+        this.$controls = this.$wrapper.querySelector('.controls');
         this.$controlLeft = this.$controls.querySelector('.control-left');
         this.$controlCenter = this.$controls.querySelector('.control-center');
         this.$controlRight = this.$controls.querySelector('.control-right');
 
-        this.$info = card.querySelector('.info');
+        this.$info = this.$wrapper.querySelector('.info');
         this.$infoBalance = this.$info.querySelector('.info-balance');
         this.$infoBattery = this.$info.querySelector('.info-battery');
         this.$infoInner = this.$info.querySelector('.info-inner');
@@ -475,10 +487,21 @@ class StarlineCard extends HTMLElement {
     }
 
     _initHandlers() {
-        this.$controlLeft.addEventListener('click', this._onClick.bind(this, 'left', this.$controlLeft));
-        this.$controlCenter.addEventListener('click', this._onClick.bind(this, 'center', this.$controlCenter));
-        this.$controlRight.addEventListener('click', this._onClick.bind(this, 'right', this.$controlRight));
+        this.$infoBalance.addEventListener('click', () => this._moreInfo('balance'));
+        this.$infoBattery.addEventListener('click', () => this._moreInfo('battery'));
+        this.$infoInner.addEventListener('click', () => this._moreInfo('ctemp'));
+        this.$infoEngine.addEventListener('click', () => this._moreInfo('etemp'));
+
+        this.$car.addEventListener('click', () => this._moreInfo('engine'));
+        this.$security.addEventListener('click', () => this._moreInfo('security'));
+        this.$gsmLevel.addEventListener('click', () => this._moreInfo('gsm_lvl'));
+
+        this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
+        this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
+        this.$controlRight.addEventListener('click', () => this._onClick('right', this.$controlRight));
+
         window.addEventListener('resize', this._setSize.bind(this));
+        // TODO: Клики по капоту, багажнику и прочему говну
     }
 
     _onClick(position, $element) {
@@ -567,6 +590,23 @@ class StarlineCard extends HTMLElement {
         } else {
             classList.add('__w07');
         }
+    }
+
+    _moreInfo(entity) {
+        this._fireEvent('hass-more-info', {
+            entityId: this._config.entities[entity]
+        });
+    }
+
+    _fireEvent(type, detail) {
+        const event = new Event(type, {
+            bubbles: true,
+            cancelable: false,
+            composed: true
+        });
+        event.detail = detail || {};
+        this.$wrapper.dispatchEvent(event);
+        return event;
     }
 
     setConfig(config) {
