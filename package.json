@@ -1,6 +1,6 @@
 {
   "name": "lovelace-starline-card",
-  "version": "1.0.7",
+  "version": "1.0.8",
   "description": "Custom Lovelace Card for StarLine integration",
   "scripts": {
     "build": "node scripts/build.js"

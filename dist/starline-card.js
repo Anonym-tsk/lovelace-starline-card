@@ -461,8 +461,9 @@ class StarlineCard extends HTMLElement {
         this._setControls();
     }
 
-    _getState(entity) {
-        let state = this._hass.states[this._config.entities[entity]].state;
+    _getState(entity_id) {
+        let entity = this._hass.states[this._config.entities[entity_id]],
+            state = entity ? entity.state : 'unavailable';
         if (state === 'on' || state === 'off' || state === 'unlocked' || state === 'locked') {
             return state === 'on' || state === 'locked';
         }
@@ -472,8 +473,9 @@ class StarlineCard extends HTMLElement {
         return null;
     }
 
-    _getAttr(entity, name) {
-        return this._hass.states[this._config.entities[entity]].attributes[name];
+    _getAttr(entity_id, name) {
+        let entity = this._hass.states[this._config.entities[entity_id]];
+        return entity ? entity.attributes[name] : null;
     }
 
     _setDarkMode() {
