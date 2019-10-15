@@ -54,7 +54,6 @@ class StarlineCard extends HTMLElement {
 
     set hass(hass) {
         this._hass = hass;
-        console.warn(hass.language);
         if (!this.$wrapper) {
             this._render();
         }
@@ -467,10 +466,10 @@ class StarlineCard extends HTMLElement {
         if (state === 'on' || state === 'off' || state === 'unlocked' || state === 'locked') {
             return state === 'on' || state === 'locked';
         }
-        if (state) {
+        if (state !== 'unavailable') {
             return state;
         }
-        return 'unavailable';
+        return null;
     }
 
     _getAttr(entity, name) {
@@ -492,24 +491,51 @@ class StarlineCard extends HTMLElement {
     }
 
     _setCarState() {
-        this.$container.classList.toggle('__disarm', !this._getState('security'));
-        this.$container.classList.toggle('__key', this._getAttr('engine', 'ignition'));
-        this.$container.classList.toggle('__door', this._getState('door'));
-        this.$container.classList.toggle('__trunk', this._getState('trunk'));
-        this.$container.classList.toggle('__hood', this._getState('hood'));
-        this.$container.classList.toggle('__smoke', this._getState('engine'));
-        this.$container.classList.toggle('__out', this._getState('out'));
-        this.$container.classList.toggle('__webasto', this._getState('webasto'));
-        this.$container.classList.toggle('__hbrake', this._getState('hbrake'));
-        this.$container.classList.toggle('__offline', !this._getAttr('gsm_lvl', 'online'));
+        const states = {
+            '__disarm': this._getState('security'),
+            '__key': this._getAttr('engine', 'ignition'),
+            '__door': this._getState('door'),
+            '__trunk': this._getState('trunk'),
+            '__hood': this._getState('hood'),
+            '__smoke': this._getState('engine'),
+            '__out': this._getState('out'),
+            '__webasto': this._getState('webasto'),
+            '__hbrake': this._getState('hbrake'),
+            '__offline': this._getAttr('gsm_lvl', 'online'),
+        };
+
+        Object.keys(states).forEach((className) => {
+            let state = states[className];
+            if (className === '__offline') {
+                this.$container.classList.toggle(className, !state);
+            } else if (className === '__disarm' && state) {
+                this.$container.classList.toggle(className, !state);
+            } else if (state !== undefined && state !== null) {
+                this.$container.classList.toggle(className, state);
+            }
+        });
     }
 
     _setInfo() {
-        this.$infoBalance.textContent = this._getState('balance') + ' ' + this._getAttr('balance', 'unit_of_measurement');
-        this.$infoBattery.textContent = this._getState('battery') + ' ' + this._getAttr('battery', 'unit_of_measurement');
-        this.$infoInner.textContent = this._getState('ctemp') + ' ' + this._getAttr('ctemp', 'unit_of_measurement');
-        this.$infoEngine.textContent = this._getState('etemp') + ' ' + this._getAttr('etemp', 'unit_of_measurement');
-        this.$gsmLevel.icon = this._getAttr('gsm_lvl', 'icon');
+        const balance = this._getState('balance'),
+            battery = this._getState('battery'),
+            ctemp = this._getState('ctemp'),
+            etemp = this._getState('etemp'),
+            gsm_lvl = this._getState('gsm_lvl');
+
+        if (balance !== null) {
+            this.$infoBalance.textContent = balance + ' ' + this._getAttr('balance', 'unit_of_measurement');
+        }
+        if (battery !== null) {
+            this.$infoBattery.textContent = battery + ' ' + this._getAttr('battery', 'unit_of_measurement');
+        }
+        if (ctemp !== null) {
+            this.$infoInner.textContent = ctemp + ' ' + this._getAttr('ctemp', 'unit_of_measurement');
+        }
+        if (etemp !== null) {
+            this.$infoEngine.textContent = etemp + ' ' + this._getAttr('etemp', 'unit_of_measurement');
+        }
+        this.$gsmLevel.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') : 'mdi:signal-off';
     }
 
     _setControls() {
