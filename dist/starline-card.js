@@ -481,7 +481,8 @@ class StarlineCard extends HTMLElement {
     }
 
     _setAlarmState() {
-        let states = this._hass.states[this._config.entities.security].attributes;
+        let entity = this._hass.states[this._config.entities.security],
+            states = entity ? entity.attributes : {};
         for (let name in states) {
             if (states.hasOwnProperty(name) && name !== 'friendly_name' && name !== 'icon') {
                 this.$container.classList.toggle('__alarm_' + name, states[name]);
