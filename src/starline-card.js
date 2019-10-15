@@ -3,7 +3,7 @@ class StarlineCard extends HTMLElement {
         super();
 
         this._config = {
-            controls: ['arm', 'ign', 'webasto', 'out'],
+            controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
             entities: {
                 'battery': 'Battery',
                 'balance': 'Balance',
@@ -12,6 +12,7 @@ class StarlineCard extends HTMLElement {
                 'gsm_lvl': 'GSM Signal Level',
                 'hbrake': 'Hand Brake',
                 'hood': 'Hood',
+                'horn': 'Horn',
                 'trunk': 'Trunk',
                 'alarm': 'Alarm Status',
                 'door': 'Doors Status',
@@ -30,6 +31,7 @@ class StarlineCard extends HTMLElement {
             center: null,
             right: null
         };
+        this._inProgressTimeout = null;
 
         this.$wrapper = null;
         this.$container = null;
@@ -123,7 +125,10 @@ class StarlineCard extends HTMLElement {
 
     _getAttr(entity_id, name) {
         let entity = this._hass.states[this._config.entities[entity_id]];
-        return entity ? entity.attributes[name] : null;
+        if (!entity || !entity.attributes.hasOwnProperty(name)) {
+            return null;
+        }
+        return entity.attributes[name];
     }
 
     _setDarkMode() {
@@ -159,9 +164,10 @@ class StarlineCard extends HTMLElement {
             let state = states[className];
             if (className === '__offline') {
                 this.$container.classList.toggle(className, !state);
-            } else if (className === '__disarm' && state) {
-                this.$container.classList.toggle(className, !state);
-            } else if (state !== undefined && state !== null) {
+            } else if (state !== null) {
+                if (className === '__disarm') {
+                    state = !state
+                }
                 this.$container.classList.toggle(className, state);
             }
         });
@@ -191,11 +197,9 @@ class StarlineCard extends HTMLElement {
 
     _setControls() {
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
-        this.$controlLeft.classList.remove('__inprogress');
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
-        this.$controlCenter.classList.remove('__inprogress');
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
-        this.$controlRight.classList.remove('__inprogress');
+        this._stopBtnProgress();
     }
 
     _initHandlers() {
@@ -271,10 +275,16 @@ class StarlineCard extends HTMLElement {
                     event = 'switch';
                     action = this._getState(entity) ? 'turn_off' : 'turn_on';
                     break;
+                case 'horn':
+                    entity = 'horn';
+                    event = 'switch';
+                    action = 'turn_on';
+                    break;
             }
 
             if (entity) {
-                $element.classList.add('__inprogress');
+                // У "сигнала" нет стейта, поэтому ждем меньше
+                this._startBtnProgress($element, entity === 'horn' ? 5000 : 30000);
                 this._hass.callService(event, action, {
                     entity_id: this._config.entities[entity]
                 });
@@ -287,6 +297,20 @@ class StarlineCard extends HTMLElement {
         } else {
             _startTimeout();
         }
+    }
+
+    _startBtnProgress($element, timeout) {
+        $element.classList.add('__inprogress');
+        clearTimeout(this._inProgressTimeout);
+        this._inProgressTimeout = setTimeout(() => $element.classList.remove('__inprogress'), timeout);
+    }
+
+    _stopBtnProgress() {
+        clearTimeout(this._inProgressTimeout);
+        this._inProgressTimeout = null;
+        this.$controlLeft.classList.remove('__inprogress');
+        this.$controlCenter.classList.remove('__inprogress');
+        this.$controlRight.classList.remove('__inprogress');
     }
 
     _setSize() {

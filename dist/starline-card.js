@@ -3,7 +3,7 @@ class StarlineCard extends HTMLElement {
         super();
 
         this._config = {
-            controls: ['arm', 'ign', 'webasto', 'out'],
+            controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
             entities: {
                 'battery': 'Battery',
                 'balance': 'Balance',
@@ -12,6 +12,7 @@ class StarlineCard extends HTMLElement {
                 'gsm_lvl': 'GSM Signal Level',
                 'hbrake': 'Hand Brake',
                 'hood': 'Hood',
+                'horn': 'Horn',
                 'trunk': 'Trunk',
                 'alarm': 'Alarm Status',
                 'door': 'Doors Status',
@@ -30,6 +31,7 @@ class StarlineCard extends HTMLElement {
             center: null,
             right: null
         };
+        this._inProgressTimeout = null;
 
         this.$wrapper = null;
         this.$container = null;
@@ -348,6 +350,10 @@ class StarlineCard extends HTMLElement {
 
 .__dark .__webasto .control-icon-webasto.control-left, .__dark .__webasto .control-icon-webasto.control-right { background: url("data:image/png;base64,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") no-repeat center; }
 
+.control-icon-horn:after { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5BAMAAABTxLEMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAtUExURUdwTK/ICa/ICa7JCK/HCa/HCbDICa/ICa3JC6/ICa7ICa/HCa/ICa/ICa/ICtkSnpQAAAAOdFJOUwBmmlOrdiTCDu+IPt2GMS7pjAAAAXtJREFUSMdjYBjMoO41kQrPEatwHpEKOd49I04hM7EKmYhV2EmsQjkiFXLMI1Jh+zsiFfq9e/eCGHXp74hT2DqPOIW7QOqwKWTbbAwH1pulPN+BwQMMdVvmvcMGMBSmvHtHlEK2eTgUTkBTmPOOSIV174izmvkdkQrZgUIvS1zgwEmlBrvCPKBQBapQ9xpsCu2ABjagh5g5lpiRe/fuEWZcSWIqjHv37hWWSD2HTeFbLOkiEznhmuFRyI2ssK5UUFAQmJSfC8KBcAJMUg9ZIZZQfqkGD7ZnBCLvAkSShaDC55BQZSSo8J0DJIAIK3yIUezhUAiNUaSCtG6KkpISUPVzJThQB6kUQC+ag7FE4U64Izdb4I1CRqDCA1gzO5pCDqwZGlsyw6kQmHDfoGWhCVgVgrKCAmrmLcCqkAco8+ZqKBQEgUqDAKwKWXEFOEZhfQ5d4VMcheFOdIUFOKsorMkMC9iDqtADd5USg6yuGl+ZnRy1CgouWjAMPQAAFoAqhV0tDd8AAAAASUVORK5CYII=") no-repeat center; }
+
+.__dark .control-icon-horn:after { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5CAMAAACWNFwNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUdwTCFDWxgxQyA+VSpUch49VCpVcxo1SCpUchkwQyNFXh48Uh48UipUcSNEXxs1SydPaxkxRRs3SydOaipUcxkxRRw3TStVcyFAWSZNaSpTcKZZG8YAAAAXdFJOUwAK7oXuQs5nVc14WS2vHcO+l/6R3/2q9qLsgwAAAZRJREFUWMPt19tygyAQBuAgIh5QBA8Lvv+DNqk4TYwIa5lpL/Lfql8IspvN7fbJfwifJpoUrAHqpOCQGuwTgyQH4ClBtiQGZ0gLCnsHm4SghLSgsklBogykBIVcPWBpOKUtpAIJo5V2ywNYyphHGiUrX7JJm211kSvkmTHWmwVeEwSJNPtnThMCSWUBUoIz0guBDdYLgXK7Lz/KOI45DuzcAtvOv8miHMZosFlv6oOdtY0Ea4gteFFEVQqNr0/Sxnw4xRR86wWZuASSwgdSXdX8O/0KUn6QRrztoxcEa9a4U2OOonWmuvcvzf0793hnp0WxGP06GpVBMBgzx0wOCBAMjZhtMCAYFp6+UCDI8HxIoefld9zpr8uD1K7R2Kfjw49B0UUd7M6V79Muknt+UXpsvTojfnPPQRLZ3KLbl3DdFwG6BiuPN0at9TIgwM69SCkOrqkr45FrN1ZP2T7bPJMT1Bj+0wn22S4g/0e0oUIpCA4kxbmXd+jx73SNBdp7tM3Ru7ya3C6FDW1f7NMO5UXuk7/LFxyuYIMfUfNyAAAAAElFTkSuQmCC") no-repeat center; }
+
 .info { width: 404px; height: 95px; position: relative; margin: 0 auto; text-align: center; }
 
 .info > * { position: relative; cursor: pointer; float: left; width: 25%; height: 20px; padding-top: 75px; }
@@ -475,7 +481,10 @@ class StarlineCard extends HTMLElement {
 
     _getAttr(entity_id, name) {
         let entity = this._hass.states[this._config.entities[entity_id]];
-        return entity ? entity.attributes[name] : null;
+        if (!entity || !entity.attributes.hasOwnProperty(name)) {
+            return null;
+        }
+        return entity.attributes[name];
     }
 
     _setDarkMode() {
@@ -511,9 +520,10 @@ class StarlineCard extends HTMLElement {
             let state = states[className];
             if (className === '__offline') {
                 this.$container.classList.toggle(className, !state);
-            } else if (className === '__disarm' && state) {
-                this.$container.classList.toggle(className, !state);
-            } else if (state !== undefined && state !== null) {
+            } else if (state !== null) {
+                if (className === '__disarm') {
+                    state = !state
+                }
                 this.$container.classList.toggle(className, state);
             }
         });
@@ -543,11 +553,9 @@ class StarlineCard extends HTMLElement {
 
     _setControls() {
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
-        this.$controlLeft.classList.remove('__inprogress');
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
-        this.$controlCenter.classList.remove('__inprogress');
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
-        this.$controlRight.classList.remove('__inprogress');
+        this._stopBtnProgress();
     }
 
     _initHandlers() {
@@ -623,10 +631,16 @@ class StarlineCard extends HTMLElement {
                     event = 'switch';
                     action = this._getState(entity) ? 'turn_off' : 'turn_on';
                     break;
+                case 'horn':
+                    entity = 'horn';
+                    event = 'switch';
+                    action = 'turn_on';
+                    break;
             }
 
             if (entity) {
-                $element.classList.add('__inprogress');
+                // У "сигнала" нет стейта, поэтому ждем меньше
+                this._startBtnProgress($element, entity === 'horn' ? 5000 : 30000);
                 this._hass.callService(event, action, {
                     entity_id: this._config.entities[entity]
                 });
@@ -639,6 +653,20 @@ class StarlineCard extends HTMLElement {
         } else {
             _startTimeout();
         }
+    }
+
+    _startBtnProgress($element, timeout) {
+        $element.classList.add('__inprogress');
+        clearTimeout(this._inProgressTimeout);
+        this._inProgressTimeout = setTimeout(() => $element.classList.remove('__inprogress'), timeout);
+    }
+
+    _stopBtnProgress() {
+        clearTimeout(this._inProgressTimeout);
+        this._inProgressTimeout = null;
+        this.$controlLeft.classList.remove('__inprogress');
+        this.$controlCenter.classList.remove('__inprogress');
+        this.$controlRight.classList.remove('__inprogress');
     }
 
     _setSize() {
