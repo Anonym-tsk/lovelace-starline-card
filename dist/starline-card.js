@@ -653,20 +653,39 @@ class StarlineCard extends HTMLElement {
         } else {
             _startTimeout();
         }
+
+        this._fireEvent('haptic', 'light');
     }
 
     _startBtnProgress($element, timeout) {
         $element.classList.add('__inprogress');
         clearTimeout(this._inProgressTimeout);
-        this._inProgressTimeout = setTimeout(() => $element.classList.remove('__inprogress'), timeout);
+        this._inProgressTimeout = setTimeout(() => this._stopBtnProgress(), timeout);
     }
 
     _stopBtnProgress() {
+        const CLS = '__inprogress';
+        let hadClass = false;
+
         clearTimeout(this._inProgressTimeout);
         this._inProgressTimeout = null;
-        this.$controlLeft.classList.remove('__inprogress');
-        this.$controlCenter.classList.remove('__inprogress');
-        this.$controlRight.classList.remove('__inprogress');
+
+        if (this.$controlLeft.classList.contains(CLS)) {
+            this.$controlLeft.classList.remove(CLS);
+            hadClass = true;
+        }
+        if (this.$controlCenter.classList.contains(CLS)) {
+            this.$controlCenter.classList.remove(CLS);
+            hadClass = true;
+        }
+        if (this.$controlRight.classList.contains(CLS)) {
+            this.$controlRight.classList.remove(CLS);
+            hadClass = true;
+        }
+
+        if (hadClass) {
+            this._fireEvent('haptic', 'warning');
+        }
     }
 
     _setSize() {
