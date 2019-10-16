@@ -460,6 +460,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _update() {
+        console.log('Update');
         this._setDarkMode();
         this._setAlarmState();
         this._setCarState();
@@ -552,6 +553,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _setControls() {
+        console.log('_setControls');
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
@@ -576,6 +578,8 @@ class StarlineCard extends HTMLElement {
     }
 
     _onClick(position, $element) {
+        this._fireEvent('haptic', 'light');
+
         let _showToast = () => {
             this.$toast.style.opacity = '1';
             setTimeout(() => {
@@ -653,8 +657,6 @@ class StarlineCard extends HTMLElement {
         } else {
             _startTimeout();
         }
-
-        this._fireEvent('haptic', 'light');
     }
 
     _startBtnProgress($element, timeout) {
@@ -703,6 +705,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _moreInfo(entity) {
+        this._fireEvent('haptic', 'light');
         this._fireEvent('hass-more-info', {
             entityId: this._config.entities[entity]
         });
