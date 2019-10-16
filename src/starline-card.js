@@ -55,6 +55,12 @@ class StarlineCard extends HTMLElement {
             element: null,
             value: null
         };
+        this._controls = {
+            security: null,
+            engine: null,
+            out: null,
+            webasto: null
+        };
 
         this.$wrapper = null;
         this.$container = null;
@@ -110,6 +116,7 @@ class StarlineCard extends HTMLElement {
             this.$toast.textContent = 'Нажмите дважды для выполнения';
         }
 
+        this._setControls();
         this._initHandlers();
         setTimeout(() => {
             this._setSize();
@@ -122,7 +129,6 @@ class StarlineCard extends HTMLElement {
         this._setAlarmState();
         this._setCarState();
         this._setInfo();
-        this._setControls();
     }
 
     _getState(entity_id) {
@@ -161,15 +167,22 @@ class StarlineCard extends HTMLElement {
     }
 
     _setCarState() {
+        const controls = {
+            security: this._getState('security'),
+            engine: this._getState('engine'),
+            out: this._getState('out'),
+            webasto: this._getState('webasto')
+        };
+
         const states = {
-            '__disarm': this._getState('security'),
+            '__disarm': controls.security,
             '__key': this._getAttr('engine', 'ignition'),
             '__door': this._getState('door'),
             '__trunk': this._getState('trunk'),
             '__hood': this._getState('hood'),
-            '__smoke': this._getState('engine'),
-            '__out': this._getState('out'),
-            '__webasto': this._getState('webasto'),
+            '__smoke': controls.engine,
+            '__out': controls.out,
+            '__webasto': controls.webasto,
             '__hbrake': this._getState('hbrake'),
             '__offline': this._getAttr('gsm_lvl', 'online'),
         };
@@ -185,6 +198,18 @@ class StarlineCard extends HTMLElement {
                 this.$container.classList.toggle(className, state);
             }
         });
+
+        let carStateChanged = false;
+        Object.keys(controls).forEach((key) => {
+            if (controls[key] !== null && controls[key] !== this._controls[key]) {
+                this._controls[key] = controls[key];
+                carStateChanged = true;
+            }
+        });
+
+        if (carStateChanged) {
+            this._stopBtnProgress();
+        }
     }
 
     _setInfo() {
@@ -207,7 +232,6 @@ class StarlineCard extends HTMLElement {
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
-        this._stopBtnProgress();
     }
 
     _initHandlers() {
@@ -316,28 +340,14 @@ class StarlineCard extends HTMLElement {
     }
 
     _stopBtnProgress() {
-        const CLS = '__inprogress';
-        let hadClass = false;
-
         clearTimeout(this._inProgressTimeout);
         this._inProgressTimeout = null;
 
-        if (this.$controlLeft.classList.contains(CLS)) {
-            this.$controlLeft.classList.remove(CLS);
-            hadClass = true;
-        }
-        if (this.$controlCenter.classList.contains(CLS)) {
-            this.$controlCenter.classList.remove(CLS);
-            hadClass = true;
-        }
-        if (this.$controlRight.classList.contains(CLS)) {
-            this.$controlRight.classList.remove(CLS);
-            hadClass = true;
-        }
+        this.$controlLeft.classList.remove('__inprogress');
+        this.$controlCenter.classList.remove('__inprogress');
+        this.$controlRight.classList.remove('__inprogress');
 
-        if (hadClass) {
-            this._fireEvent('haptic', 'warning');
-        }
+        this._fireEvent('haptic', 'success');
     }
 
     _setSize() {
