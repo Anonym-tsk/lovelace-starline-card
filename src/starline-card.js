@@ -33,25 +33,40 @@ class StarlineCard extends HTMLElement {
         };
         this._inProgressTimeout = null;
 
+        this._info = {
+            balance: {
+                element: null,
+                value: null
+            },
+            battery: {
+                element: null,
+                value: null
+            },
+            ctemp: {
+                element: null,
+                value: null
+            },
+            etemp: {
+                element: null,
+                value: null
+            }
+        };
+        this._gsm_lvl = {
+            element: null,
+            value: null
+        };
+
         this.$wrapper = null;
         this.$container = null;
 
         this.$car = null;
         this.$security = null;
 
-        this.$controls = null;
         this.$controlLeft = null;
         this.$controlCenter = null;
         this.$controlRight = null;
 
-        this.$info = null;
-        this.$infoBalance = null;
-        this.$infoBattery = null;
-        this.$infoInner = null;
-        this.$infoEngine = null;
-
         this.$toast = null;
-        this.$gsmLevel = null;
     }
 
     set hass(hass) {
@@ -74,22 +89,21 @@ class StarlineCard extends HTMLElement {
         this.$wrapper = card.querySelector('.wrapper');
         this.$container = this.$wrapper.querySelector('.container');
 
-        this.$car = this.$wrapper.querySelector('.car-cnt');
-        this.$security = this.$wrapper.querySelector('.car-security');
+        this.$car = this.$container.querySelector('.car-cnt');
+        this.$security = this.$container.querySelector('.car-security');
 
-        this.$controls = this.$wrapper.querySelector('.controls');
-        this.$controlLeft = this.$controls.querySelector('.control-left');
-        this.$controlCenter = this.$controls.querySelector('.control-center');
-        this.$controlRight = this.$controls.querySelector('.control-right');
+        this.$controlLeft = this.$container.querySelector('.control-left');
+        this.$controlCenter = this.$container.querySelector('.control-center');
+        this.$controlRight = this.$container.querySelector('.control-right');
 
-        this.$info = this.$wrapper.querySelector('.info');
-        this.$infoBalance = this.$info.querySelector('.info-balance');
-        this.$infoBattery = this.$info.querySelector('.info-battery');
-        this.$infoInner = this.$info.querySelector('.info-inner');
-        this.$infoEngine = this.$info.querySelector('.info-engine');
+        this._info.balance.element = this.$container.querySelector('.info-balance');
+        this._info.battery.element = this.$container.querySelector('.info-battery');
+        this._info.ctemp.element = this.$container.querySelector('.info-inner');
+        this._info.etemp.element = this.$container.querySelector('.info-engine');
+
+        this._gsm_lvl.element = this.$container.querySelector('.gsm-lvl');
 
         this.$toast = this.$container.querySelector('.toast');
-        this.$gsmLevel = this.$container.querySelector('.gsm-lvl');
 
         if (this._hass.language === 'ru') {
             // Ugly?
@@ -104,7 +118,6 @@ class StarlineCard extends HTMLElement {
     }
 
     _update() {
-        console.log('Update');
         this._setDarkMode();
         this._setAlarmState();
         this._setCarState();
@@ -175,29 +188,22 @@ class StarlineCard extends HTMLElement {
     }
 
     _setInfo() {
-        const balance = this._getState('balance'),
-            battery = this._getState('battery'),
-            ctemp = this._getState('ctemp'),
-            etemp = this._getState('etemp'),
-            gsm_lvl = this._getState('gsm_lvl');
+        Object.keys(this._info).forEach((key) => {
+            const state = this._getState(key);
+            if (state !== null && state !== this._info[key].value) {
+                this._info[key].value = state;
+                this._info[key].element.textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+            }
+        });
 
-        if (balance !== null) {
-            this.$infoBalance.textContent = balance + ' ' + this._getAttr('balance', 'unit_of_measurement');
+        const gsm_lvl = this._getState('gsm_lvl');
+        if (gsm_lvl !== this._gsm_lvl.value) {
+            this._gsm_lvl.value = gsm_lvl;
+            this._gsm_lvl.element.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') : 'mdi:signal-off';
         }
-        if (battery !== null) {
-            this.$infoBattery.textContent = battery + ' ' + this._getAttr('battery', 'unit_of_measurement');
-        }
-        if (ctemp !== null) {
-            this.$infoInner.textContent = ctemp + ' ' + this._getAttr('ctemp', 'unit_of_measurement');
-        }
-        if (etemp !== null) {
-            this.$infoEngine.textContent = etemp + ' ' + this._getAttr('etemp', 'unit_of_measurement');
-        }
-        this.$gsmLevel.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') : 'mdi:signal-off';
     }
 
     _setControls() {
-        console.log('_setControls');
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
@@ -205,14 +211,14 @@ class StarlineCard extends HTMLElement {
     }
 
     _initHandlers() {
-        this.$infoBalance.addEventListener('click', () => this._moreInfo('balance'));
-        this.$infoBattery.addEventListener('click', () => this._moreInfo('battery'));
-        this.$infoInner.addEventListener('click', () => this._moreInfo('ctemp'));
-        this.$infoEngine.addEventListener('click', () => this._moreInfo('etemp'));
+        Object.keys(this._info).forEach((key) => {
+            this._info[key].element.addEventListener('click', () => this._moreInfo(key));
+        });
+
+        this._gsm_lvl.element.addEventListener('click', () => this._moreInfo('gsm_lvl'));
 
         this.$car.addEventListener('click', () => this._moreInfo('engine'));
         this.$security.addEventListener('click', () => this._moreInfo('security'));
-        this.$gsmLevel.addEventListener('click', () => this._moreInfo('gsm_lvl'));
 
         this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
         this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
