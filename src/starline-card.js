@@ -220,6 +220,8 @@ class StarlineCard extends HTMLElement {
     }
 
     _onClick(position, $element) {
+        this._fireEvent('haptic', 'light');
+
         let _showToast = () => {
             this.$toast.style.opacity = '1';
             setTimeout(() => {
@@ -297,8 +299,6 @@ class StarlineCard extends HTMLElement {
         } else {
             _startTimeout();
         }
-
-        this._fireEvent('haptic', 'light');
     }
 
     _startBtnProgress($element, timeout) {
@@ -347,6 +347,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _moreInfo(entity) {
+        this._fireEvent('haptic', 'light');
         this._fireEvent('hass-more-info', {
             entityId: this._config.entities[entity]
         });
