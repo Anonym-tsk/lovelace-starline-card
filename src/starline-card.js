@@ -104,6 +104,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _update() {
+        console.log('Update');
         this._setDarkMode();
         this._setAlarmState();
         this._setCarState();
@@ -196,6 +197,7 @@ class StarlineCard extends HTMLElement {
     }
 
     _setControls() {
+        console.log('_setControls');
         this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
         this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
         this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
