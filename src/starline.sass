@@ -16,17 +16,56 @@
         .__dark .__alarm_#{$alarmName} &
             background: url('assets/' + $name + '_red_dark.png') no-repeat center
 
-@mixin button-bg($name, $on: '')
+@mixin button-bg-center($on: '')
+    border: 3px solid #b0c80c
+    background-color: var(--paper-card-background-color)
     &:active
         opacity: .8
+    .__dark &
+        border: 4px solid #000
+        background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%)
+
     @if $on == ''
-        background: url('assets/' + $name + '_off.png') no-repeat center
         .__dark &
-            background: url('assets/' + $name + '_off_dark.png') no-repeat center
+            box-shadow: inset 0 2px 1px 0 #5d5d5d
     @else
-        background: url('assets/' + $name + '_on.png') no-repeat center
+        background-color: #b0c80c
         .__dark &
-            background: url('assets/' + $name + '_on_dark.png') no-repeat center
+            box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5
+
+@mixin button-bg-lr($on: '')
+    &:active
+        opacity: .8
+    .__dark &
+        background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%)
+        & .control-in,
+        & .control-s1,
+        & .control-s2,
+        & .control-i1,
+        & .control-i2
+            border-color: #000
+            border-width: 4px
+
+    @if $on == ''
+        & .control-in,
+        & .control-s1,
+        & .control-s2,
+        & .control-i1,
+        & .control-i2
+            border-color: #b0c80c
+        .__dark &
+            & .control-in
+                box-shadow: inset 0 4px 1px -2px #5d5d5d
+    @else
+        background: #b0c80c
+        .__dark &
+            & .control-in
+                box-shadow: inset 0 2px 1px 0 #6ecaf1, inset -2px 0 0 6px #2bafe5
+            & .control-i1
+                box-shadow: 0 0 0 6px #2bafe5
+            & .control-i2
+                box-shadow: inset 0 0 0 6px #2bafe5
+
 @mixin button-icon($name, $on: '')
     @if $on == ''
         &:after
@@ -302,20 +341,23 @@
 
 .controls
     width: 404px
-    height: 161px
+    height: 160px
     position: relative
     margin: 0 auto
-    > div
-        position: absolute
-        cursor: pointer
-        .__offline &
-            opacity: .4
-            pointer-events: none
-        &.__inprogress
-            pointer-events: none
-            &:after
-                animation: blink 1.2s linear infinite
-    > div:after
+
+.control
+    position: absolute
+    cursor: pointer
+    box-sizing: border-box
+    overflow: hidden
+    .__offline &
+        opacity: .4
+        pointer-events: none
+    &.__inprogress
+        pointer-events: none
+        &:after
+            animation: blink 1.2s linear infinite
+    &:after
         content: ''
         position: absolute
         display: block
@@ -326,67 +368,120 @@
 
 .control-left,
 .control-right
-    top: 19px
+    top: 18px
     left: 0
     width: 138px
     height: 124px
-    @include button-bg('car_control_btn_left')
+    @include button-bg-lr()
     background-size: contain !important
-    &:after
-        background-position: 22px 33px !important
+
+.control-left:after
+    background-position: 22px 33px !important
+
+.control-right:after
+    background-position: 36px 33px !important
+
+.control-in
+    position: relative
+    z-index: 1
+    height: 100%
+    box-sizing: border-box
+    border-top: 3px solid #b0c80c
+    border-bottom: 3px solid #b0c80c
+
+.control-s1,
+.control-i1
+    display: block
+    position: absolute
+    z-index: 1
+    width: 180px
+    height: 180px
+    border: 3px solid #b0c80c
+    box-sizing: border-box
+    border-radius: 50%
+    top: (124px - 180px) / 2
+    right: -154px
+    left: auto
+    background: var(--paper-card-background-color)
+    .control-right &
+        left: -154px
+        right: auto
+
+.control-s2,
+.control-i2
+    z-index: 1
+    display: block
+    position: absolute
+    width: 300px
+    height: 300px
+    box-sizing: border-box
+    border: 3px solid #b0c80c
+    border-radius: 50%
+    top: (124px - 300px) / 2
+    left: 0
+    right: auto
+    box-shadow: 0 0 0 20px var(--paper-card-background-color)
+    .control-right &
+        right: 0
+        left: auto
+
+.control-i1,
+.control-i2
+    z-index: 0
+    border-color: transparent
+    background: transparent
 
 .control-center
+    z-index: 2
     top: 0
-    left: 121px
-    width: 162px
-    height: 162px
-    @include button-bg('car_control_btn_central')
-    &:after
-        background-position: 41px 53px !important
+    left: 122px
+    width: 160px
+    height: 160px
+    border-radius: 50%
+    @include button-bg-center()
 
 .control-right
     left: 266px
-    transform: scaleX(-1)
 
 .control-icon-arm
     @include button-icon('car_control_icon_arm_start')
     .__arm &
         @include button-icon('car_control_icon_arm_stop', 1)
         &.control-center
-            @include button-bg('car_control_btn_central', 1)
+            @include button-bg-center(1)
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left', 1)
+            @include button-bg-lr(1)
 
 .control-icon-ign
     @include button-icon('car_control_icon_ign_start')
     .__smoke &
         @include button-icon('car_control_icon_ign_stop', 1)
         &.control-center
-            @include button-bg('car_control_btn_central', 1)
+            @include button-bg-center(1)
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left', 1)
+            @include button-bg-lr(1)
 
 .control-icon-out
     @include button-icon('car_control_icon_out')
     .__out &
         @include button-icon('car_control_icon_out', 1)
         &.control-center
-            @include button-bg('car_control_btn_central', 1)
+            @include button-bg-center(1)
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left', 1)
+            @include button-bg-lr(1)
 
 .control-icon-webasto
     @include button-icon('car_control_icon_webasto')
     .__webasto &
         @include button-icon('car_control_icon_webasto', 1)
         &.control-center
-            @include button-bg('car_control_btn_central', 1)
+            @include button-bg-center(1)
         &.control-left,
         &.control-right
-            @include button-bg('car_control_btn_left', 1)
+            @include button-bg-lr(1)
 
 .control-icon-horn
     @include button-icon('car_control_icon_poke')
@@ -415,6 +510,7 @@
     @include info-icon('car_status_engine_temperature')
 
 .toast
+    z-index: 3
     position: absolute
     left: 0
     right: 0
