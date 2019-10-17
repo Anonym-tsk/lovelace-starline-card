@@ -175,7 +175,7 @@ class StarlineCard extends HTMLElement {
         };
 
         const states = {
-            '__disarm': controls.security,
+            '__arm': controls.security,
             '__key': this._getAttr('engine', 'ignition'),
             '__door': this._getState('door'),
             '__trunk': this._getState('trunk'),
@@ -192,9 +192,6 @@ class StarlineCard extends HTMLElement {
             if (className === '__offline') {
                 this.$container.classList.toggle(className, !state);
             } else if (state !== null) {
-                if (className === '__disarm') {
-                    state = !state
-                }
                 this.$container.classList.toggle(className, state);
             }
         });

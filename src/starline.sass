@@ -264,12 +264,12 @@
     @include car-bg-alarm('car_indication_sensor_tilt', 'tilt')
 
 .car-security
-    display: block
+    display: none
     top: 0
     left: 0
     cursor: pointer
-    .__disarm &
-        display: none
+    .__arm &
+        display: block
 .car-security-1,
 .car-security-5
     width: 39px
@@ -349,9 +349,9 @@
     transform: scaleX(-1)
 
 .control-icon-arm
-    @include button-icon('car_control_icon_arm_stop')
-    .__disarm &
-        @include button-icon('car_control_icon_arm_start', 1)
+    @include button-icon('car_control_icon_arm_start')
+    .__arm &
+        @include button-icon('car_control_icon_arm_stop', 1)
         &.control-center
             @include button-bg('car_control_btn_central', 1)
         &.control-left,
