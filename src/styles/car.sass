@@ -1,0 +1,190 @@
+@import 'animations'
+
+@mixin car-bg($name)
+    background: url('assets/' + $name + '.png') no-repeat center
+    .__dark &
+        background: url('assets/' + $name + '_dark.png') no-repeat center
+@mixin car-bg-alarm($name, $alarmName: '', $blink: '')
+    @if $alarmName == ''
+        .__alarm &
+            background: url('assets/' + $name + '_red.png') no-repeat center
+            @if $blink != ''
+                animation: blink 1.2s linear infinite
+        .__dark .__alarm &
+            background: url('assets/' + $name + '_red_dark.png') no-repeat center
+    @else
+        .__alarm_#{$alarmName} &
+            background: url('assets/' + $name + '_red.png') no-repeat center
+        .__dark .__alarm_#{$alarmName} &
+            background: url('assets/' + $name + '_red_dark.png') no-repeat center
+
+.car
+    width: 332px
+    height: 197px
+    position: relative
+    margin: 0 auto -20px auto
+    transform: scale(.8)
+    transform-origin: top center
+    *
+        position: absolute
+
+.car-cnt
+    top: 67px
+    left: 24px
+    cursor: pointer
+
+.car-door
+    display: none
+    top: 28px
+    left: 15px
+    width: 63px
+    height: 91px
+    @include car-bg('car_indication_door')
+    @include car-bg-alarm('car_indication_door', 'door')
+
+    .__door &
+        display: block
+
+.car-body
+    top: 19px
+    left: 63px
+    background: url('assets/car_indication_bg_guard.png') no-repeat center
+    width: 158px
+    height: 113px
+    @include car-bg('car_indication_bg_guard')
+
+.car-hood
+    left: 90px
+    top: 53px
+    width: 103px
+    height: 23px
+    @include car-bg('car_indication_hood')
+    @include car-bg-alarm('car_indication_hood', 'hood')
+
+    .__hood &
+        animation: blink 1.2s linear infinite
+
+.car-trunk
+    display: none
+    width: 128px
+    height: 32px
+    left: 78px
+    top: 0
+    @include car-bg('car_indication_trunk')
+    @include car-bg-alarm('car_indication_trunk', 'trunk')
+
+    .__trunk &
+        display: block
+
+.car-frontlight-left,
+.car-frontlight-right
+    width: 27px
+    height: 15px
+    left: 73px
+    top: 79px
+    @include car-bg('car_indication_frontlight')
+    @include car-bg-alarm('car_indication_frontlight', '', 1)
+
+.car-frontlight-right
+    transform: scaleX(-1)
+    left: 183px
+
+.car-smoke
+    display: none
+    left: 222px
+    top: 22px
+    width: 39px
+    height: 85px
+    background-repeat: no-repeat
+    background-position: center
+    animation: smoke 1.5s linear infinite
+    .__dark &
+        animation: smoke_dark 1.5s linear infinite
+    .__alert &
+        animation: smoke_alert 1.5s linear infinite
+    .__dark.__alert &
+        animation: smoke_alert_dark 1.5s linear infinite
+    .__smoke &
+        display: block
+
+.car-key
+    display: none
+    top: 30px
+    left: 117px
+    width: 54px
+    height: 22px
+    @include car-bg('car_indication_key')
+    @include car-bg-alarm('car_indication_key', 'ign')
+
+    .__key &
+        display: block
+
+.car-hbrake
+    display: none
+    top: 85px
+    left: 117px
+    width: 49px
+    height: 31px
+    @include car-bg('car_indication_parking')
+    @include car-bg-alarm('car_indication_parking', 'hbrake')
+
+    .__hbrake &
+        display: block
+
+.car-shock
+    position: absolute
+    top: 0
+    right: 65px
+    width: 46px
+    height: 40px
+    background-size: contain !important
+    animation: blink 1.2s linear infinite
+    @include car-bg-alarm('car_indication_sensor_shock', 'shock_l')
+    @include car-bg-alarm('car_indication_sensor_shock', 'shock_h')
+
+.car-tilt
+    position: absolute
+    top: 0
+    left: 60px
+    width: 46px
+    height: 40px
+    background-size: contain !important
+    animation: blink 1.2s linear infinite
+    @include car-bg-alarm('car_indication_sensor_tilt', 'tilt')
+
+.car-security
+    display: none
+    top: 0
+    left: 0
+    cursor: pointer
+    .__arm &
+        display: block
+.car-security-1,
+.car-security-5
+    width: 39px
+    height: 112px
+    top: 86px
+    left: 0
+    @include car-bg('car_indication_sectors_1')
+    @include car-bg-alarm('car_indication_sectors_1')
+.car-security-2,
+.car-security-4
+    width: 93px
+    height: 84px
+    top: 11px
+    left: 22px
+    @include car-bg('car_indication_sectors_2')
+    @include car-bg-alarm('car_indication_sectors_2')
+.car-security-3
+    width: 114px
+    height: 29px
+    top: 0
+    left: 110px
+    @include car-bg('car_indication_sectors_3')
+    @include car-bg-alarm('car_indication_sectors_3')
+.car-security-4
+    transform: scaleX(-1)
+    left: 218px
+.car-security-5
+    transform: scaleX(-1)
+    left: 294px
