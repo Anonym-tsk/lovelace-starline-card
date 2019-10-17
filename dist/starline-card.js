@@ -111,7 +111,9 @@ class StarlineCard extends HTMLElement {
   50% { opacity: 0; }
   100% { opacity: 1; } }
 
-.wrapper { overflow: hidden; position: relative; height: 400px; padding: 20px 0 0 50%; opacity: 0; transition: opacity .1s linear; }
+.wrapper { overflow: hidden; position: relative; height: 500px; padding: 20px 0 0 50%; opacity: 0; transition: opacity .1s linear; font-size: 16px; line-height: 20px; color: #00aeef; }
+
+.__dark .wrapper { color: #fff; }
 
 .wrapper.__w09 { height: 450px; padding-top: 24px; }
 
@@ -127,9 +129,7 @@ class StarlineCard extends HTMLElement {
 
 .wrapper.__title { padding-top: 0 !important; }
 
-.container { width: 404px; margin: 0 auto; font-family: Helvetica, Arial, monospace; font-size: 19px; line-height: 22px; color: #00aeef; transform: scale(0.8) translateX(-50%); transform-origin: left top; }
-
-.__dark .container { color: #fff; }
+.container { width: 404px; margin: 0 auto; transform: translateX(-50%); transform-origin: left top; }
 
 @media (max-width: 360px) { .container { transform: scale(0.7); } }
 
@@ -435,9 +435,9 @@ class StarlineCard extends HTMLElement {
 
 .__dark .control-icon-horn:after { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5CAMAAACWNFwNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUdwTCFDWxgxQyA+VSpUch49VCpVcxo1SCpUchkwQyNFXh48Uh48UipUcSNEXxs1SydPaxkxRRs3SydOaipUcxkxRRw3TStVcyFAWSZNaSpTcKZZG8YAAAAXdFJOUwAK7oXuQs5nVc14WS2vHcO+l/6R3/2q9qLsgwAAAZRJREFUWMPt19tygyAQBuAgIh5QBA8Lvv+DNqk4TYwIa5lpL/Lfql8IspvN7fbJfwifJpoUrAHqpOCQGuwTgyQH4ClBtiQGZ0gLCnsHm4SghLSgsklBogykBIVcPWBpOKUtpAIJo5V2ywNYyphHGiUrX7JJm211kSvkmTHWmwVeEwSJNPtnThMCSWUBUoIz0guBDdYLgXK7Lz/KOI45DuzcAtvOv8miHMZosFlv6oOdtY0Ea4gteFFEVQqNr0/Sxnw4xRR86wWZuASSwgdSXdX8O/0KUn6QRrztoxcEa9a4U2OOonWmuvcvzf0793hnp0WxGP06GpVBMBgzx0wOCBAMjZhtMCAYFp6+UCDI8HxIoefld9zpr8uD1K7R2Kfjw49B0UUd7M6V79Muknt+UXpsvTojfnPPQRLZ3KLbl3DdFwG6BiuPN0at9TIgwM69SCkOrqkr45FrN1ZP2T7bPJMT1Bj+0wn22S4g/0e0oUIpCA4kxbmXd+jx73SNBdp7tM3Ru7ya3C6FDW1f7NMO5UXuk7/LFxyuYIMfUfNyAAAAAElFTkSuQmCC") no-repeat center; }
 
-.info { width: 404px; height: 95px; position: relative; margin: 0 auto; text-align: center; }
+.info { position: absolute; left: 16px; right: 16px; bottom: 16px; height: 95px; text-align: center; }
 
-.info > * { position: relative; cursor: pointer; float: left; width: 25%; height: 20px; padding-top: 75px; }
+.info-i { position: relative; cursor: pointer; float: left; width: 25%; height: 20px; padding-top: 75px; background-size: 46px auto !important; }
 
 .info-balance { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAuBAMAAACMkMmDAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUdwTC2u5iyv5i2v5i2v5iyv5iyv5iyv5iyv5iyv5i2v5kysCBcAAAAKdFJOUwC6xGkygZjbFz621qezAAAAuklEQVQ4y2NgGMqAbRUWsABVTRZhNayrCKuJIqwGuzGoaqIIq8FhDIqaKMJqcBmDrAbJGOUpLiAwtQpNDZIxi1HFFmAzxgBVcAEWYxYh7GdHUWOFULMU7BgXB6AoM4oaLQzvKABFWYhQw0FrNYuNgaBqVVkaEOBSswLEr8ISFzRQs4QINYvR0gs2NcsRatpxhk8CXI0UTjULG6CCjatwh/PCYFAwGgeuWkUgLvD6a8SpSRTECQQGY8kNAL3NG8rLBId3AAAAAElFTkSuQmCC") no-repeat center; }
 
@@ -459,7 +459,7 @@ class StarlineCard extends HTMLElement {
 
 .__dark .toast { background: rgba(255, 255, 255, 0.9); color: #444; }
 
-.gsm-lvl { position: absolute; cursor: pointer; top: 0; right: 0; width: 36px; height: 36px; }
+.gsm-lvl { position: absolute; cursor: pointer; top: 16px; right: 16px; width: 28px; height: 28px; }
 `;
         card.innerHTML = `<div class="wrapper">
     <div class="container">
@@ -505,17 +505,17 @@ class StarlineCard extends HTMLElement {
             </div>
         </div>
 
-        <div class="info">
-            <div class="info-balance"></div>
-            <div class="info-battery"></div>
-            <div class="info-inner"></div>
-            <div class="info-engine"></div>
-        </div>
-
         <div class="toast">Double tap for action</div>
-
-        <ha-icon class="gsm-lvl" icon="mdi:signal-cellular-outline"></ha-icon>
     </div>
+
+    <div class="info">
+        <div class="info-i info-balance"></div>
+        <div class="info-i info-battery"></div>
+        <div class="info-i info-inner"></div>
+        <div class="info-i info-engine"></div>
+    </div>
+
+    <ha-icon class="gsm-lvl" icon="mdi:signal-cellular-outline"></ha-icon>
 </div>`;
         card.appendChild(style);
         this.appendChild(card);
@@ -530,14 +530,14 @@ class StarlineCard extends HTMLElement {
         this.$controlCenter = this.$container.querySelector('.control-center');
         this.$controlRight = this.$container.querySelector('.control-right');
 
-        this._info.balance.element = this.$container.querySelector('.info-balance');
-        this._info.battery.element = this.$container.querySelector('.info-battery');
-        this._info.ctemp.element = this.$container.querySelector('.info-inner');
-        this._info.etemp.element = this.$container.querySelector('.info-engine');
+        this._info.balance.element = this.$wrapper.querySelector('.info-balance');
+        this._info.battery.element = this.$wrapper.querySelector('.info-battery');
+        this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
+        this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
 
-        this._gsm_lvl.element = this.$container.querySelector('.gsm-lvl');
+        this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
 
-        this.$toast = this.$container.querySelector('.toast');
+        this.$toast = this.$wrapper.querySelector('.toast');
 
         if (this._hass.language === 'ru') {
             // Ugly?

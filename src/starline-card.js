@@ -102,14 +102,14 @@ class StarlineCard extends HTMLElement {
         this.$controlCenter = this.$container.querySelector('.control-center');
         this.$controlRight = this.$container.querySelector('.control-right');
 
-        this._info.balance.element = this.$container.querySelector('.info-balance');
-        this._info.battery.element = this.$container.querySelector('.info-battery');
-        this._info.ctemp.element = this.$container.querySelector('.info-inner');
-        this._info.etemp.element = this.$container.querySelector('.info-engine');
+        this._info.balance.element = this.$wrapper.querySelector('.info-balance');
+        this._info.battery.element = this.$wrapper.querySelector('.info-battery');
+        this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
+        this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
 
-        this._gsm_lvl.element = this.$container.querySelector('.gsm-lvl');
+        this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
 
-        this.$toast = this.$container.querySelector('.toast');
+        this.$toast = this.$wrapper.querySelector('.toast');
 
         if (this._hass.language === 'ru') {
             // Ugly?

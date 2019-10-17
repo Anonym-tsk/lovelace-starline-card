@@ -132,10 +132,15 @@
 .wrapper
     overflow: hidden
     position: relative
-    height: 400px
+    height: 500px
     padding: 20px 0 0 50%
     opacity: 0
     transition: opacity .1s linear
+    font-size: 16px
+    line-height: 20px
+    color: #00aeef
+    .__dark &
+        color: #fff
     &.__w09
         height: 450px
         padding-top: 24px
@@ -157,14 +162,8 @@
 .container
     width: 404px
     margin: 0 auto
-    font-family: Helvetica, Arial, monospace
-    font-size: 19px
-    line-height: 22px
-    color: #00aeef
-    transform: scale(.8) translateX(-50%)
+    transform: translateX(-50%)
     transform-origin: left top
-    .__dark &
-        color: #fff
 
 @media (max-width: 360px)
     .container
@@ -487,18 +486,21 @@
     @include button-icon('car_control_icon_poke')
 
 .info
-    width: 404px
+    position: absolute
+    left: 16px
+    right: 16px
+    bottom: 16px
     height: 95px
-    position: relative
-    margin: 0 auto
     text-align: center
-    > *
-        position: relative
-        cursor: pointer
-        float: left
-        width: 25%
-        height: 20px
-        padding-top: 75px
+
+.info-i
+    position: relative
+    cursor: pointer
+    float: left
+    width: 25%
+    height: 20px
+    padding-top: 75px
+    background-size: 46px auto !important
 
 .info-balance
     @include info-icon('car_status_sim')
@@ -532,7 +534,7 @@
 .gsm-lvl
     position: absolute
     cursor: pointer
-    top: 0
-    right: 0
-    width: 36px
-    height: 36px
+    top: 16px
+    right: 16px
+    width: 28px
+    height: 28px
