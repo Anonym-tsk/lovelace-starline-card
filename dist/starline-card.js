@@ -485,7 +485,7 @@ class StarlineCard extends HTMLElement {
 
 .__dark .control-icon-horn .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5CAMAAACWNFwNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABRUExURUdwTCFDWxgxQyA+VSpUch49VCpVcxo1SCpUchkwQyNFXh48Uh48UipUcSNEXxs1SydPaxkxRRs3SydOaipUcxkxRRw3TStVcyFAWSZNaSpTcKZZG8YAAAAXdFJOUwAK7oXuQs5nVc14WS2vHcO+l/6R3/2q9qLsgwAAAZRJREFUWMPt19tygyAQBuAgIh5QBA8Lvv+DNqk4TYwIa5lpL/Lfql8IspvN7fbJfwifJpoUrAHqpOCQGuwTgyQH4ClBtiQGZ0gLCnsHm4SghLSgsklBogykBIVcPWBpOKUtpAIJo5V2ywNYyphHGiUrX7JJm211kSvkmTHWmwVeEwSJNPtnThMCSWUBUoIz0guBDdYLgXK7Lz/KOI45DuzcAtvOv8miHMZosFlv6oOdtY0Ea4gteFFEVQqNr0/Sxnw4xRR86wWZuASSwgdSXdX8O/0KUn6QRrztoxcEa9a4U2OOonWmuvcvzf0793hnp0WxGP06GpVBMBgzx0wOCBAMjZhtMCAYFp6+UCDI8HxIoefld9zpr8uD1K7R2Kfjw49B0UUd7M6V79Muknt+UXpsvTojfnPPQRLZ3KLbl3DdFwG6BiuPN0at9TIgwM69SCkOrqkr45FrN1ZP2T7bPJMT1Bj+0wn22S4g/0e0oUIpCA4kxbmXd+jx73SNBdp7tM3Ru7ya3C6FDW1f7NMO5UXuk7/LFxyuYIMfUfNyAAAAAElFTkSuQmCC") no-repeat center; }
 
-.toast { z-index: 3; position: absolute; left: 6px; right: 6px; top: 39px; background: rgba(0, 0, 0, 0.86); color: #fff; height: 42px; line-height: 42px; text-align: center; border-radius: 5px; pointer-events: none; transition: opacity .2s ease-in-out; opacity: 0; }
+.toast { z-index: 3; position: absolute; left: 6px; right: 6px; top: 155px; background: rgba(0, 0, 0, 0.86); color: #fff; height: 42px; line-height: 42px; text-align: center; border-radius: 5px; pointer-events: none; transition: opacity .2s ease-in-out; opacity: 0; max-width: 300px; margin: 0 auto; }
 
 .__dark .toast { background: rgba(255, 255, 255, 0.9); color: #444; }
 
@@ -546,8 +546,9 @@ class StarlineCard extends HTMLElement {
                 <div class="control-i2"></div>
                 <div class="control-icon"></div>
             </div>
-            <div class="toast">Double tap for action</div>
         </div>
+
+        <div class="toast">Double tap for action</div>
     </div>
 
     <div class="info">
