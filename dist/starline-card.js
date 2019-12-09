@@ -263,9 +263,9 @@ class StarlineCard extends HTMLElement {
 
 .car-security-5 { transform: scaleX(-1); left: 294px; }
 
-.info { position: absolute; left: 16px; right: 16px; bottom: 16px; margin: 0 auto; max-width: 400px; text-align: center; white-space: nowrap; }
+.info { position: absolute; left: 16px; right: 16px; bottom: 11px; margin: 0 auto; max-width: 400px; text-align: center; white-space: nowrap; }
 
-.info-i { position: relative; cursor: pointer; float: left; width: 25%; height: 20px; line-height: 20px; vertical-align: middle; }
+.info-i { position: relative; cursor: pointer; float: left; width: 25%; height: 30px; line-height: 30px; vertical-align: middle; }
 
 .info-i:before { content: ''; display: inline-block; width: 23px; height: 18px; vertical-align: middle; margin-right: 4px; background-size: 23px auto !important; background-position: top left !important; }
 
