@@ -92,8 +92,13 @@ $side-bg-width: 60px
 .controls
     width: $center-size + (2 * $side-width)
     height: $center-size
-    position: relative
+    position: absolute
+    top: 134px
+    left: -100px
+    right: -100px
     margin: 0 auto
+    transform: scale(0.7)
+    transform-origin: top center
 
 .control
     cursor: pointer
@@ -106,6 +111,7 @@ $side-bg-width: 60px
         pointer-events: none
         &:after
             animation: blink 1.2s linear infinite
+            // TODO: Что-то не мигает на айфоне в родном приложении
     &:after
         content: ''
         position: absolute

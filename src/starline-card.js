@@ -119,13 +119,13 @@ class StarlineCard extends HTMLElement {
         this._setControls();
         this._initHandlers();
         setTimeout(() => {
-            this._setSize();
             this.$wrapper.style.opacity = '1';
         }, 10);
     }
 
     _update() {
         this._setDarkMode();
+        this._setHasTitle();
         this._setAlarmState();
         this._setCarState();
         this._setInfo();
@@ -153,6 +153,10 @@ class StarlineCard extends HTMLElement {
 
     _setDarkMode() {
         this.$wrapper.classList.toggle('__dark', this._config.dark);
+    }
+
+    _setHasTitle() {
+        this.$wrapper.classList.toggle('__title', !!this._config.title);
     }
 
     _setAlarmState() {
@@ -244,8 +248,6 @@ class StarlineCard extends HTMLElement {
         this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
         this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
         this.$controlRight.addEventListener('click', () => this._onClick('right', this.$controlRight));
-
-        window.addEventListener('resize', this._setSize.bind(this));
     }
 
     _onClick(position, $element) {
@@ -345,20 +347,6 @@ class StarlineCard extends HTMLElement {
         this.$controlRight.classList.remove('__inprogress');
 
         this._fireEvent('haptic', 'success');
-    }
-
-    _setSize() {
-        let width = this.$wrapper.clientWidth,
-            classList = this.$wrapper.classList;
-        classList.remove('__w07', '__w08', '__w09');
-        classList.toggle('__title', !!this._config.title);
-        if (width >= 440) {
-            classList.add('__w09');
-        } else if (width >= 370) {
-            classList.add('__w08');
-        } else {
-            classList.add('__w07');
-        }
     }
 
     _moreInfo(entity) {

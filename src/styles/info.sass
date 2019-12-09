@@ -11,6 +11,7 @@
     margin: 0 auto
     max-width: 400px
     text-align: center
+    white-space: nowrap
 
 .info-i
     position: relative
@@ -18,15 +19,24 @@
     float: left
     width: 25%
     height: 20px
-    padding-top: 37px
-    background-size: 46px auto !important
-    background-position: top center !important
+    line-height: 20px
+    vertical-align: middle
 
-.info-balance
+    &:before
+        content: ''
+        display: inline-block
+        width: 23px
+        height: 18px
+        vertical-align: middle
+        margin-right: 4px
+        background-size: 23px auto !important
+        background-position: top left !important
+
+.info-balance:before
     @include info-icon('car_status_sim')
-.info-battery
+.info-battery:before
     @include info-icon('car_status_storage_battery')
-.info-inner
+.info-inner:before
     @include info-icon('car_status_cabin_temperature')
-.info-engine
+.info-engine:before
     @include info-icon('car_status_engine_temperature')
