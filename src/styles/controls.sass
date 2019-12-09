@@ -74,14 +74,14 @@
 
 @mixin button-icon($name, $on: '')
     @if $on == ''
-        &:after
+        & .control-icon
             background: url('assets/' + $name + '_off.png') no-repeat center
-        .__dark &:after
+        .__dark & .control-icon
             background: url('assets/' + $name + '_off_dark.png') no-repeat center
     @else
-        &:after
+        & .control-icon
             background: url('assets/' + $name + '_on.png') no-repeat center
-        .__dark &:after
+        .__dark & .control-icon
             background: url('assets/' + $name + '_on_dark.png') no-repeat center
 
 $center-size: 120px
@@ -109,10 +109,9 @@ $side-bg-width: 60px
         pointer-events: none
     &.__inprogress
         pointer-events: none
-        &:after
+        & .control-icon
             animation: blink 1.2s linear infinite
-            // TODO: Что-то не мигает на айфоне в родном приложении
-    &:after
+    & .control-icon
         content: ''
         position: absolute
         display: block
@@ -141,12 +140,12 @@ $side-bg-width: 60px
 
 .control-left
     left: 0
-    &:after
+    & .control-icon
         background-position: (($side-width - $side-bg-width) / 2 - 2px) center !important
 
 .control-right
     right: 0
-    &:after
+    & .control-icon
         background-position: (($side-width - $side-bg-width) / 2 + 2px) center !important
 
 .control-in
