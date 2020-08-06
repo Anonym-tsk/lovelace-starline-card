@@ -309,9 +309,15 @@ class StarlineCard extends HTMLElement {
   50% { opacity: 0; }
   100% { opacity: 1; } }
 
-.controls { width: 340px; height: 120px; position: absolute; top: 134px; left: -100px; right: -100px; margin: 0 auto; transform: scale(0.7); transform-origin: top center; }
+.controls { display: flex; flex-wrap: wrap; justify-content: space-between; width: 330px; height: 110px; position: absolute; top: 134px; left: -100px; right: -100px; margin: 0 auto; transform: scale(0.7); transform-origin: top center; }
 
-.control { cursor: pointer; box-sizing: border-box; overflow: hidden; }
+.control { cursor: pointer; box-sizing: border-box; overflow: hidden; position: relative; margin: 0 auto; z-index: 2; width: 110px; height: 110px; border-radius: 50%; border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); }
+
+.control:active { opacity: .8; }
+
+.__dark .control { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
+
+.__dark .control { box-shadow: inset 0 2px 1px 0 #5d5d5d; }
 
 .__offline .control { opacity: .4; pointer-events: none; }
 
@@ -319,47 +325,9 @@ class StarlineCard extends HTMLElement {
 
 .control.__inprogress .control-icon { animation: blink 1.2s linear infinite; }
 
-.control .control-icon { content: ''; position: absolute; display: block; top: 0; bottom: 0; left: 0; right: 0; background-size: 60px auto !important; }
+.control .control-icon { content: ''; position: absolute; display: block; top: 0; bottom: 0; left: 0; right: 0; background-size: 60px auto !important; background-position: center !important; }
 
-.control-center { position: relative; margin: 0 auto; z-index: 2; width: 120px; height: 120px; border-radius: 50%; border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); }
-
-.control-center:active { opacity: .8; }
-
-.__dark .control-center { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .control-center { box-shadow: inset 0 2px 1px 0 #5d5d5d; }
-
-.control-left, .control-right { position: absolute; top: 20px; width: 110px; height: 80px; }
-
-.control-left:active, .control-right:active { opacity: .8; }
-
-.__dark .control-left, .__dark .control-right { background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .control-left .control-in, .__dark .control-left .control-s1, .__dark .control-left .control-s2, .__dark .control-left .control-i1, .__dark .control-left .control-i2, .__dark .control-right .control-in, .__dark .control-right .control-s1, .__dark .control-right .control-s2, .__dark .control-right .control-i1, .__dark .control-right .control-i2 { border-color: #000; border-width: 4px; }
-
-.control-left .control-in, .control-left .control-s1, .control-left .control-s2, .control-left .control-i1, .control-left .control-i2, .control-right .control-in, .control-right .control-s1, .control-right .control-s2, .control-right .control-i1, .control-right .control-i2 { border-color: #b0c80c; }
-
-.__dark .control-left .control-in, .__dark .control-right .control-in { box-shadow: inset 0 4px 1px -2px #5d5d5d; }
-
-.control-left { left: 0; }
-
-.control-left .control-icon { background-position: 23px center !important; }
-
-.control-right { right: 0; }
-
-.control-right .control-icon { background-position: 27px center !important; }
-
-.control-in { position: relative; z-index: 1; height: 100%; box-sizing: border-box; border-top: 3px solid #b0c80c; border-bottom: 3px solid #b0c80c; }
-
-.control-s1, .control-i1 { display: block; position: absolute; z-index: 1; width: 140px; height: 140px; border: 3px solid #b0c80c; box-sizing: border-box; border-radius: 50%; top: -30px; right: -124.44563px; left: auto; background: var(--paper-card-background-color); }
-
-.control-right .control-s1, .control-right .control-i1 { left: -124.44563px; right: auto; }
-
-.control-s2, .control-i2 { z-index: 1; display: block; position: absolute; width: 260px; height: 260px; box-sizing: border-box; border: 3px solid #b0c80c; border-radius: 50%; top: -90px; left: 0; right: auto; box-shadow: 0 0 0 20px var(--paper-card-background-color); }
-
-.control-right .control-s2, .control-right .control-i2 { right: 0; left: auto; }
-
-.control-i1, .control-i2 { z-index: 0; border-color: transparent; background: transparent; }
+.control-left, .control-right { width: 90px; height: 90px; top: 10px; }
 
 .control-icon-arm .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5BAMAAABTxLEMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAqUExURUdwTK7HCa7ICa/JCq/ICa7HCLDKCbHKC6/ICa/ICa/ICa7ICq7ICa/ICmoptxgAAAANdFJOUwBp7lmrOCEO2JmFSMLYESkfAAABbklEQVRIx2NgoD0o9Lh7t0WcsLqQu2DgSkhd5V0ocMevjlUXpvBSAF6Fm+7CgTZeA+8igQ14FCaBFHSZbl4BotXwKPQFyjeDGBZAxhXc6rhB0gUgFrsvXrt5gLIOECYLkHkAp8Lcu3dvFECY7L13717FqXDt3bu3Yey9d+/ewqnw7N27DTA2x927d3AqBEbLAhibCxg5uNSxAz1gAOMwAzkFOBSyAeWAMcw6c2YAJJIS8CtkvHtXgN4K2VetWpVAjEIoGFkKWV3AwBGkUMTFB6jQBXsaZ4ZkvpsghXMhbIHBqbAF4hkPQgqvwILHl4DC26zGlnfvTjYO2EtA4S02cMF3KWEtAYWXAmxB1GVWgp5p5wSREyoIKrwCKkxuFPgSDkcBYCGpxkhEgKsCaYNYIhTeKJh7E2Q9QYV3HSraWe4So/AiW4IsUQovBcBrG/wK7youukucQgQYVgoNsBePuujqLuEo7WOU0MBRmjZeAK5yEJ15qkPkAAAAAElFTkSuQmCC") no-repeat center; }
 
@@ -369,27 +337,13 @@ class StarlineCard extends HTMLElement {
 
 .__dark .__arm .control-icon-arm .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5CAMAAACWNFwNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAABFUExURUdwTC7Q+TPN9Cqs+VPP8T3X+jnV+Sqt9ymt9Siu/TW36Smu+Cu5+S/J+i7O+i/A7izP+EXJ8E/Y9iy/+S2v5kO+61DG7in4Uz0AAAAUdFJOUwCg0Sj3rsI+GQ38NE1yi+mx8eFeChy9HgAAAaBJREFUWMPtl9mSgyAQRQcb2dGowP9/6rC0mkymJgF9mZT3xWiK44W+LH59XXqWFKC5MVyDkCfghLa3bnTOqbEjBo4ipSYJtkp19hgS7D0uI5lpJ0og7lmTFc28m3NnEnee8j54r3ZiU6/FgO19mBkZhp5NfiW2jKPkWI8wDzwmMKbR9NNaGWgwiB0OjG92xDKj6YZOG4U8ndsWgDQT5rHaoiiJ8XPxJw1eF3xP9ShClxtSi7wRyVh6T2qjw1UxqMsE7NZCoMXqssilGOnFZsuTzNDZuipvqgCWEIbcY0ykzzMEWBmLRuAi90K4Kd1hnChvA5q7hMd+xsI0AsUOLIO2zZDDDlMg1bZIEHHUoTQzpVMiqolSOvPDDiVobViOkNEaZBswbiWYFIgSUIDxBwC/YcWhYq5I2424CCQNugA1SXfbPxUrjnjYS3zPC5B3j49FK5BdwAt4AT8FGEKg5CygYpwv1i76LKDzA08yP562A9MnRZRy5wF/0wX850D5DjCQ9/fleNhXLw3SmnO7sPGI9Lfmui8+AfyF4Iyv+8/QN5kuax1JidTjAAAAAElFTkSuQmCC") no-repeat center; }
 
-.__arm .control-icon-arm.control-center { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
+.__arm .control-icon-arm.control { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
 
-.__arm .control-icon-arm.control-center:active { opacity: .8; }
+.__arm .control-icon-arm.control:active { opacity: .8; }
 
-.__dark .__arm .control-icon-arm.control-center { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
+.__dark .__arm .control-icon-arm.control { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
 
-.__dark .__arm .control-icon-arm.control-center { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
-
-.__arm .control-icon-arm.control-left, .__arm .control-icon-arm.control-right { background: #b0c80c; }
-
-.__arm .control-icon-arm.control-left:active, .__arm .control-icon-arm.control-right:active { opacity: .8; }
-
-.__dark .__arm .control-icon-arm.control-left, .__dark .__arm .control-icon-arm.control-right { background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .__arm .control-icon-arm.control-left .control-in, .__dark .__arm .control-icon-arm.control-left .control-s1, .__dark .__arm .control-icon-arm.control-left .control-s2, .__dark .__arm .control-icon-arm.control-left .control-i1, .__dark .__arm .control-icon-arm.control-left .control-i2, .__dark .__arm .control-icon-arm.control-right .control-in, .__dark .__arm .control-icon-arm.control-right .control-s1, .__dark .__arm .control-icon-arm.control-right .control-s2, .__dark .__arm .control-icon-arm.control-right .control-i1, .__dark .__arm .control-icon-arm.control-right .control-i2 { border-color: #000; border-width: 4px; }
-
-.__dark .__arm .control-icon-arm.control-left .control-in, .__dark .__arm .control-icon-arm.control-right .control-in { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset -2px 0 0 6px #2bafe5; }
-
-.__dark .__arm .control-icon-arm.control-left .control-i1, .__dark .__arm .control-icon-arm.control-right .control-i1 { box-shadow: 0 0 0 6px #2bafe5; }
-
-.__dark .__arm .control-icon-arm.control-left .control-i2, .__dark .__arm .control-icon-arm.control-right .control-i2 { box-shadow: inset 0 0 0 6px #2bafe5; }
+.__dark .__arm .control-icon-arm.control { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
 
 .control-icon-ign .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA6BAMAAADVUMOiAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAwUExURUdwTK/ICa7JCa7KB6/HCa/HCq/HCbHGDq/ICa7GAK/ICa7ICa/ICa/HCq/ICa/ICjy79wIAAAAPdFJOUwC5VCDfd2cRQAXu0J4uib3vzUYAAAHySURBVEjH5ZW/S8NAFMev1v4SLRVHhda6dCsYJxcL7dIpUzah/Q/sUCg6FcHFpXEScXFQpIPUVRzazaXQzuLgn6BURGLbM+8ul9yPRF1ExLfcS/LJ5ft+3AtCP2ozi7wNg8Eo5q35T8CYpmnrwBRtRzM/z2UcwOtvJP2XwAPDMLYBvDDAakFcBIuWCgJ3JPA1qMkkDlvyt+NLZMkzoIgSuyhtO4/STt2RGy6xDNt+InHYBhuNQ8a9QO32wHsXwFkMoC7FMCBulQdDMlj2dFwC0F/pZ5zsiSBsc0rdMQC6IzYugURixbkYUnAK4LEEgsQwu7ihII1KF8Ey1e29BY9I6tN4ahgdQWKeL47upNbV40mMea+dl0punvJKJ8zLVafF3BJugcSWAvYAnBNu2R9JdBUwhfgQmcSIwtGzEZIlhuFUpwWwQEEuPWXfoYHPKDjxEs765f4L0GrYVlPjeVJ2BGurmfQHe3IRgsAmCndwkMblWxe1THSEA0G3qUlbV2SwwIExFugbd3KFyiSd87vhBl33rzV6uCLLQocFPfDvHoRO6OKMgGYU+/ejNKUsc1MFqz5zbyyUz+6mrvorSZKgk1gF5QEIUbRbKvgsz1KoyF1HBZXZC/JWsQqOlPFcx1bFB+wpYCKbywq2htB+NmeiP2EfO/MhTIfIU+UAAAAASUVORK5CYII=") no-repeat center; }
 
@@ -399,27 +353,13 @@ class StarlineCard extends HTMLElement {
 
 .__dark .__smoke .control-icon-ign .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAE0AAAA5CAMAAABEZFZVAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAB4UExURUdwTCis9hPn+iqt+QCx/ymt+Syx+Cmr/yiq/yqv9Sqv+Squ9zK9+Suv+Bfc9mjW9STK+iPY+1LJ+mzY9iHP+wzz/yXM+z+++VPP8TTC717R+E7O+Rrp/EzV9EHF+krN9DLf9kjB6y2v5kG96yq06E3F7jKz6CLJ7x0w2R4AAAAidFJOUwAd9zQBKWgFDBVVPYBK/u+ZtITmpPuPivXlwqjX5m/O+fl1AP20AAADL0lEQVRYw72Y2ZaiMBCGDSFkIwq2bSso9hCN7/+GUwkJDS0I6Jz5r1w4H0VqZ7X6H4opZcOiNF5MowwRPCSCOF1MY2S/ywe1J2wxjcvTeljfki+nqWM9rIP6pzSBWle1mnDpNC2mjKNGnNE3nzSmnKjESUj0nBYzfL45aQ8xN6+N8wLA5P7T60TY82dlSAp737T0tFuZNoYoxDwsurrb6A81YRsY5w6FqCzQMkXaQ+rDEjJ1bs5fNIYgDjSIWkg358CFMOuvxmHyxzbpHcgZWwjjRCphlQSazhL3g5LwwAthMou8v6IQGVHrQaWmYJS2lcbCdutrUKD5r3pTiewprAlr/7uzbD0SurXefCVPYZZFZJIh5mHYP8grMCiMRKWnz7PkzkYi34FB2APrbs6K29QT4fJZMFvwuY2ZtrwzfLrD30BjJLdOW2BZzBCWIMJDpjJ8qT0N5/UY6gGGbX+gXJyschm6BcO7QJN5PROWKuJoKL1brbPQLShJZ9B+wZL9zhpHfR6bE/iwoSFhLE0QIvK5sN36u4KDY9jTvoWvSk3VNudUiDSfhtUNDMwRkuBQsaDE0NDtrBuuEeg+G1abe77Lsp2/v84x67qhn5WTMNDa3t/noL7I1g1fIa+XwPrXXELTpigx9azQGIW5kPBpj8TxTViH1jRPo7U25kVYbQ49mvlTFMXl+CKsO1A42iEVKrm8CnugCYJU/iqsvv2mPeTpI+y6hIbzp7BoHGYOjzSSW8d2YPuZsCEaRVvrWLMcNkiDQRx6fGEWw7rxxuTR2K9uSeBEgHULYd1cYGR78VOenbUAtxRW6x8adFRZbUNlB5wq0mWwTg3pTw5uj8FiBsxoGGT9JKsLyXp7Vdtg7SSSzrBMFyUoDLJ4ZMWBSWQOrNalkG1fSAl9CwY0zEPP2ggUz4CNTyWO5vspHBufgm1SsX/iTV0S1rQUc/sa3Ax7sEpW0W1chz2C+cp9/JBDW2sfhpGqtuOqAMFx5T6hgW0GArfqwLgdDkcFwz6ElbtieG+DASrSTjcLs8PeU9lFxF0zuFNSnpZlYVUmZGJ/j+P57wYIYvQfvrd44T3FavUXwksnSh3G8YgAAAAASUVORK5CYII=") no-repeat center; }
 
-.__smoke .control-icon-ign.control-center { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
+.__smoke .control-icon-ign.control { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
 
-.__smoke .control-icon-ign.control-center:active { opacity: .8; }
+.__smoke .control-icon-ign.control:active { opacity: .8; }
 
-.__dark .__smoke .control-icon-ign.control-center { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
+.__dark .__smoke .control-icon-ign.control { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
 
-.__dark .__smoke .control-icon-ign.control-center { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
-
-.__smoke .control-icon-ign.control-left, .__smoke .control-icon-ign.control-right { background: #b0c80c; }
-
-.__smoke .control-icon-ign.control-left:active, .__smoke .control-icon-ign.control-right:active { opacity: .8; }
-
-.__dark .__smoke .control-icon-ign.control-left, .__dark .__smoke .control-icon-ign.control-right { background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .__smoke .control-icon-ign.control-left .control-in, .__dark .__smoke .control-icon-ign.control-left .control-s1, .__dark .__smoke .control-icon-ign.control-left .control-s2, .__dark .__smoke .control-icon-ign.control-left .control-i1, .__dark .__smoke .control-icon-ign.control-left .control-i2, .__dark .__smoke .control-icon-ign.control-right .control-in, .__dark .__smoke .control-icon-ign.control-right .control-s1, .__dark .__smoke .control-icon-ign.control-right .control-s2, .__dark .__smoke .control-icon-ign.control-right .control-i1, .__dark .__smoke .control-icon-ign.control-right .control-i2 { border-color: #000; border-width: 4px; }
-
-.__dark .__smoke .control-icon-ign.control-left .control-in, .__dark .__smoke .control-icon-ign.control-right .control-in { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset -2px 0 0 6px #2bafe5; }
-
-.__dark .__smoke .control-icon-ign.control-left .control-i1, .__dark .__smoke .control-icon-ign.control-right .control-i1 { box-shadow: 0 0 0 6px #2bafe5; }
-
-.__dark .__smoke .control-icon-ign.control-left .control-i2, .__dark .__smoke .control-icon-ign.control-right .control-i2 { box-shadow: inset 0 0 0 6px #2bafe5; }
+.__dark .__smoke .control-icon-ign.control { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
 
 .control-icon-out .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA6CAMAAAAQoC6jAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAzUExURUdwTK/ICa/ICa/ICa/ICa/ICa/ICq/ICa7JDK/ICavGAK/ICa/ICa/ICa/ICbDIB6/ICiZTdo4AAAAQdFJOUwBZgKdGMvvvE9IHlGvivyE3M9FuAAACJElEQVRYw+1XSZLDIAxkNzv8/7XjhN04jnBySdXoNFPlNN1CagmE/uMnQzNLjDHEMvkFtEC8iDWU4Z/BMR+P4ay+DcdVPAuH78FJE1+FD9+jl2Jj69nbup97Qwgx1HWQdhWvXu3WXWwgjTZZ01v4bcc7xRlSiBWOsoijtZRJAdYkkxcLJZmrryPBBZ7S68CNgzNeV280Oj0lxEAF5+87vCCGfwsiUDSZz6ePPp41eJi5pOOVHgkOFJ8nQCnm09n0czWnxcCvuFcTxJTUnJcN4DxSTASLS6jrzy4Vp6Mlx4Sq1tVC0erbHqo50aE7sk9IYvYatTeynUhfpnDvEU1fupfaSfKE/R5QtdzQCzykE/P37Zd0BvQSUagE4oCVOBx8NgW87KW8B4yDEvMSDwzYSz5B9LWUoZKP342TuZkY+FL8YQaNgKICgsvmqVHQQwpqVOrgwk6t56oxHHKIRwcCtJ4c3YsdAMloDnjZvmzpjtzSdNm+CgQfvJUhPrhsNli6MKNUK1+VhHHfrtlEqB22IUXyJTtcdTGVmbOVIVUoisfx4bCL4CfbsK0QrFl87GxyyvrelMFFeAaHVeS8KLhbXUWqpGhOysKWZWll6azrYXcj7V7urJxt4XSkLdTSqjqz1hbOcSV2+/C0dh+ooo3AVTykuZuGSftL3HlZyIsxevM9hd35m+L+W0rj+bGykc+ekNz0mI4yjT6OwKyhlBqCOfqPX4w/xWhEmJODQbYAAAAASUVORK5CYII=") no-repeat center; }
 
@@ -429,27 +369,13 @@ class StarlineCard extends HTMLElement {
 
 .__dark .__out .control-icon-out .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFEAAAA5CAMAAAB59jczAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACNUExURUdwTCmt/ymt+Smt9yms+Cmt9Smt9wCt/yms/yir/ymv+Cqw+Smu81bK7yms+Sqx+S63+VnN+TO9+WbU9DTE+ijR+x/h+w3y/SHX+yzL+k3H8UvF+FnN9BHw/mDU+SLc/DG/7TjX9Bju/CHX9RTs/Rrk/EfA7S2v5i+x5zW16ErD7T276iLI7ym66hfe97qCvDIAAAAndFJOUwAQNkEnGiABBApLUxX9Lltkp23teJrM/6yE4IjT9b287vbp9N3X9SqYwL8AAAR8SURBVFjD3VjZdqM6EAySEIsAsTpstidews7/f960FjzkXJ8LTuZp+iknNkW1uru65Le3fyYsEX8Ly3YMzzQphOkZjm39GM6jAcIuD+OQMxcH1PsJqGUbZoDD7HA7vos4Xg557CJqfBfTdkzEsvv7PI5TI2Kaxvn9lvPvYjpe4GaXeWybLzHOxzMPTOdlSAsIprd5av4b7XzJMNB8NWPq5sdxjbP6e5oPjLwGaRuE3WcN0g5970P0/dAt/xovcfAKpOUQftMEu96vT1XMOQ+rqPYHidm20yV9AdJyKLuPGi85QcMERAbCYVRqzEmw3Fse23QPo8rXP4WYwKgYpgu9De2OWPTZaUhOd1bcNlCuAZMKEwMesym+hMSxoOcpistO1eeATXvnIaazfKRPYuQJGha8A573bDlHAa8lZHfN0K68Ied7qxiGgRoOm/Jr85ESZ+kDBdmKvPdQDDKZ85AsDSIpNp0iKZNgpXrneQ9JQVHm5FdIt4ek2DxIipfGn5LkR0i3T9IhhaTYn5ZzVxSb9kFS1C7qJMkcGZtJG/ggKSaitkK8bWj3q6zUh2hqfbCslN/6cDfLbZvsqilC/4F6U4JYLgUDSHJEhJJDf6KsbdYn8b9Ji8dbPw1MmBFQ7zQ7X7VCXM95EYKSI2IS/kuW74w2EVGukmYEF7lU73nRtLaZZ1Dy2+FcwKe1/N4dexuI+hiHE6bx8aHe65hGEN2Momw5yI3+8VyZTR8hj1SfbfMsOl98GsuW7DndQDQ1YkEcDz2HBEBsgjzJuenTrY40mXp1TGz7OaQCtEy2vHoXYuPDMFhPITXgKpn9HN+eQLYL4Nt+jutXS8hfXxD7yJWAFmXTvnNcap0FjnQVlJdfkvbDQAq3rWvtb9bawKWaBSwlYCnAI+RxiEkIVD8mm/1o6JnRnWvT8GuPL+QNfJZvrjdnBuZ6LQE2Kb6WGvTLUeKjBWVTzkB7hiVt6zHmoISDWlfDQRyH5aBMcverTe2BdGotz0IfVXKwZZOo7gVmV7reSuiTbX2EIy86TRIU2wPhaMEGRMxlVQ082w9mwj5E2bgkbe3YM7La7bWAPQPtKfEQ9czArcBQ9DEFVQ+van727BmxC+UO6S6wXE0X8JQFBYMauFHpF9QAEzNpod+zsBeSzXTjAWXRwyYLTISrlBJtYmAX7dnXgmQ6KEt3C8Ve+WORhTEXe0e7IpDJfV7K9nCkWmW8FOCjVnZJ+B4cK9/W9rVr7vR7junW2iyB50biwiFoyqsIeP3jYrM42evGpQ3pFs+dh1jkDpckEmCeaW/e/jExu8IgoYYEz3285wVnjMGePcAy0zOUpOgV2wz+i9fDoomj2KlHsWeX1dhKI/iStbcM4p6GlXy309SuNkPNg29cP3BVDk93ITS9S14FFOXxAvDcWnJWi6YHb46+cedSvQc+voRbTLegDb2fgNf/9l1TYAZuHNUl3I7ELSmpT6kYSucn92HHgy50WZxWaaxcmfHDS7ulfgOghFDocgOm52/9TGHbahL/jZ9dfgOqncd2gC9OCAAAAABJRU5ErkJggg==") no-repeat center; }
 
-.__out .control-icon-out.control-center { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
+.__out .control-icon-out.control { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
 
-.__out .control-icon-out.control-center:active { opacity: .8; }
+.__out .control-icon-out.control:active { opacity: .8; }
 
-.__dark .__out .control-icon-out.control-center { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
+.__dark .__out .control-icon-out.control { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
 
-.__dark .__out .control-icon-out.control-center { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
-
-.__out .control-icon-out.control-left, .__out .control-icon-out.control-right { background: #b0c80c; }
-
-.__out .control-icon-out.control-left:active, .__out .control-icon-out.control-right:active { opacity: .8; }
-
-.__dark .__out .control-icon-out.control-left, .__dark .__out .control-icon-out.control-right { background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .__out .control-icon-out.control-left .control-in, .__dark .__out .control-icon-out.control-left .control-s1, .__dark .__out .control-icon-out.control-left .control-s2, .__dark .__out .control-icon-out.control-left .control-i1, .__dark .__out .control-icon-out.control-left .control-i2, .__dark .__out .control-icon-out.control-right .control-in, .__dark .__out .control-icon-out.control-right .control-s1, .__dark .__out .control-icon-out.control-right .control-s2, .__dark .__out .control-icon-out.control-right .control-i1, .__dark .__out .control-icon-out.control-right .control-i2 { border-color: #000; border-width: 4px; }
-
-.__dark .__out .control-icon-out.control-left .control-in, .__dark .__out .control-icon-out.control-right .control-in { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset -2px 0 0 6px #2bafe5; }
-
-.__dark .__out .control-icon-out.control-left .control-i1, .__dark .__out .control-icon-out.control-right .control-i1 { box-shadow: 0 0 0 6px #2bafe5; }
-
-.__dark .__out .control-icon-out.control-left .control-i2, .__dark .__out .control-icon-out.control-right .control-i2 { box-shadow: inset 0 0 0 6px #2bafe5; }
+.__dark .__out .control-icon-out.control { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
 
 .control-icon-webasto .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5BAMAAABTxLEMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAwUExURUdwTK/ICarHAK/ICa/ICa/ICa/IB67JCa/ICa/ICa/ICa7IDq/ICa/ICa/HCq/IClNEJvYAAAAPdFJOUwD1B6mQUSA6eOPAEdFjL2yk3eAAAAI4SURBVEjHvZbNSiNBEIDb/I1r/AEP8bBgAt5E0Dcw7Au4B++J4F19AvMGgYX1kkPyBtFjToovEN9gzRPIkPUnQS2nqrtqMtM9zcDC1iFUMl93/ddEqf8ghR85wZ1BTvDwJ2unXq4YNoxW+e0Fu3PWRps+bg3+Gq06vPOBE3hjH+DAw1XHAv7xgkVg05U6+Ey3AKZy5LvHch9gJkc+ssESRHJO6hDgPRs8QZBiCFB7yASP8HFN7q5luljHxxTNCmrz7LKQYFcskdZxteEBpQSlF33dIG3bAe42lfqmwbnc+N5wtGGUlVsNYrSrWms6MhgdfjJgzUQN8GnXLow+LkFsB1qzch61QCMGMdqxeJGQFarcGYPbVGuUX3bXdCRqitak6jkFjulsEWLbVW17muTK0U9vUhkd94SUmdXYELZNrU3cZa0lU07ODUz3cL27pLQT4D5o2zcC3rHH1wmQ8hI+Ljj5qnQ4obJvhHsaAJBoJ3ZL6gRGgzpiEDfQmvbHGiq0HUjc53rAXpKgaYEB7oe41bD26W0x5HqVGMROXMXkOuYUPS9wOHjVctpFKV47DqdJlbXX9CE7tl6PwcCyrNSePG3FwQTP9mxV+gyW4vSUm45xvWCwMOaEq2rmlugoU7l0w6bDeVSUFMcILMiI27nQdwxV0rZJb9e7GvGintZu3EtnYYs+yJC/+t5FLY502bWcFuTpSoZ3du0DL/n9uw5b3vfqsRKwk+/VHkxz/gco93KClfY//Hf5AuvDOeBpTjHeAAAAAElFTkSuQmCC") no-repeat center; }
 
@@ -459,27 +385,13 @@ class StarlineCard extends HTMLElement {
 
 .__dark .__webasto .control-icon-webasto .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFEAAAA5CAMAAAB59jczAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAACEUExURUdwTCqq/yqt+Smv+imt9imt9ier/wD//yOj/ySt/ymt+Cmu+Syz+Sms9ymt+Cmt9iy2+TXD+ivS+yHl+zLX807N8DHB+hzp+yPY+zrO+GHS8iHf/EvG9EvJ+CvH+mXW9l3W+j+760S/7UvE8BvW9DXT+EXZ+C2v5jGz6Di46UbB7CrE7gjniWoAAAAndFJOUwAKKTQUHA4BAwYiLlNDSjtgeZLZ/fpq7K+k9MPEkoPdr/fr2fm408hOVk8AAAO1SURBVFjDxVjpeqsgEA0KCO5m0SzN1jZXNO//fncAF7CtWm++7/pz4hxnOXMYslrNeTzPW73y8ThCiL0UEBOXINvGGFseNsdBXjjUNDFE6fKoGXaz4hZQC5AEOeZLAWmQFbvMQSagH53WhC8GzAtxDEmfo4f8eLMNFyJCOGkhqmuM+z5wEp2e15iwZW0m8eZZVn8ibNQ12X9alt91Jdk/SwsRynD5LJciam8bkZOwKEvxJyZL+Ki9wX/XdcbTUZe71OeLc5b+eevP/VxGXdYHl/4+SNR4Q9r7xt+jyUmosDcL6AMham/Dn5Gw+chzn+D5/NHixf208S7L7dql0p87l/YjBcwRm01rxOFd5O5FiyiK1EeesrWmSsbtzeSMEi8Px5uye56nSEoDlLH7yOy8GXXCDYgX89Nnj9jkbSCWYnsJKJvF6lSJF3fWBmCTN3IfpimcQUolDfU5QCsU7E1EmTfhKFhbphl5K2moM4evrHDavKH/lWmCfntzxqS+fIcoitxBOPowTNUmngjSQ072qUZMZn2wEaU/oU5mBbkO0ESIijEVUIUBmQeI5fbgYpy8CSPuTYRH04bCPxUvQFkYScUQEvKmfvhh2LfpqJYzHGlSyyC5XbIm7whTJ3/vLfXaGSNQT2pJXhocvgQp7dg933vE/WghUUdqSV5EwvchooDmIJwcuu7UD3cUsdcBOcfY/SZIaC5wtuvOJOLDdMUk/vgaJNAAQXdaxMN41gYF5RxjJ79/CRIOCLln6B/ELhsdbYuCco6hCdUAsd5DmjBauiByNxhlDwnvVl8xid4GkPqk5U3X6ptLR4eQJm+Dvtp8VnnGWL7pniX8ceqQBWm5231FTvo+QAxJ+6bY3dwJzWXULJzqa9eE9tGInpyoGvYpPimPUS8EAlY6Bk2wuiM3P/kmTR7VMZ+UR7kbGoWrM5+pj1QmYqx2IJjR3dmdcXQxZAiBkgH7I8AXvVUh/3BLZq0VUMpLW7j6LIXF+ojkC9L7fuhgNOu85r0Q7GTWdr9gSLR8wXVB7Qkz91rdnW79lpYu6WZIfnOjgcJpDt6vreSjdsDF1JD8VEo1tWJ3bu8cIO46yOq47I6gp9ZUATgjharibckiqgbiDapoHO9MK8OcIfnxTISKmSsIlWlXx+kd4kehzOqrVTEKBwbk/Ju9dlDI/JhaKyxyD/+Qs+xtmPtWOFCHSn5k6aUaBgIjPjh4j5lLF9+p5UDYE4HI+hwsvlJ/z3pMMH/l/x+Mcc5e+4fKf3z+Al27tKUa0zBJAAAAAElFTkSuQmCC") no-repeat center; }
 
-.__webasto .control-icon-webasto.control-center { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
+.__webasto .control-icon-webasto.control { border: 3px solid #b0c80c; background-color: var(--paper-card-background-color); background-color: #b0c80c; }
 
-.__webasto .control-icon-webasto.control-center:active { opacity: .8; }
+.__webasto .control-icon-webasto.control:active { opacity: .8; }
 
-.__dark .__webasto .control-icon-webasto.control-center { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
+.__dark .__webasto .control-icon-webasto.control { border: 4px solid #000; background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
 
-.__dark .__webasto .control-icon-webasto.control-center { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
-
-.__webasto .control-icon-webasto.control-left, .__webasto .control-icon-webasto.control-right { background: #b0c80c; }
-
-.__webasto .control-icon-webasto.control-left:active, .__webasto .control-icon-webasto.control-right:active { opacity: .8; }
-
-.__dark .__webasto .control-icon-webasto.control-left, .__dark .__webasto .control-icon-webasto.control-right { background: linear-gradient(to bottom, #3c4042 0%, #141c22 100%); }
-
-.__dark .__webasto .control-icon-webasto.control-left .control-in, .__dark .__webasto .control-icon-webasto.control-left .control-s1, .__dark .__webasto .control-icon-webasto.control-left .control-s2, .__dark .__webasto .control-icon-webasto.control-left .control-i1, .__dark .__webasto .control-icon-webasto.control-left .control-i2, .__dark .__webasto .control-icon-webasto.control-right .control-in, .__dark .__webasto .control-icon-webasto.control-right .control-s1, .__dark .__webasto .control-icon-webasto.control-right .control-s2, .__dark .__webasto .control-icon-webasto.control-right .control-i1, .__dark .__webasto .control-icon-webasto.control-right .control-i2 { border-color: #000; border-width: 4px; }
-
-.__dark .__webasto .control-icon-webasto.control-left .control-in, .__dark .__webasto .control-icon-webasto.control-right .control-in { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset -2px 0 0 6px #2bafe5; }
-
-.__dark .__webasto .control-icon-webasto.control-left .control-i1, .__dark .__webasto .control-icon-webasto.control-right .control-i1 { box-shadow: 0 0 0 6px #2bafe5; }
-
-.__dark .__webasto .control-icon-webasto.control-left .control-i2, .__dark .__webasto .control-icon-webasto.control-right .control-i2 { box-shadow: inset 0 0 0 6px #2bafe5; }
+.__dark .__webasto .control-icon-webasto.control { box-shadow: inset 0 2px 1px 0 #6ecaf1, inset 0 0 0 6px #2bafe5; }
 
 .control-icon-horn .control-icon { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAFAAAAA5BAMAAABTxLEMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAtUExURUdwTK/ICa/ICa7JCK/HCa/HCbDICa/ICa3JC6/ICa7ICa/HCa/ICa/ICa/ICtkSnpQAAAAOdFJOUwBmmlOrdiTCDu+IPt2GMS7pjAAAAXtJREFUSMdjYBjMoO41kQrPEatwHpEKOd49I04hM7EKmYhV2EmsQjkiFXLMI1Jh+zsiFfq9e/eCGHXp74hT2DqPOIW7QOqwKWTbbAwH1pulPN+BwQMMdVvmvcMGMBSmvHtHlEK2eTgUTkBTmPOOSIV174izmvkdkQrZgUIvS1zgwEmlBrvCPKBQBapQ9xpsCu2ABjagh5g5lpiRe/fuEWZcSWIqjHv37hWWSD2HTeFbLOkiEznhmuFRyI2ssK5UUFAQmJSfC8KBcAJMUg9ZIZZQfqkGD7ZnBCLvAkSShaDC55BQZSSo8J0DJIAIK3yIUezhUAiNUaSCtG6KkpISUPVzJThQB6kUQC+ag7FE4U64Izdb4I1CRqDCA1gzO5pCDqwZGlsyw6kQmHDfoGWhCVgVgrKCAmrmLcCqkAco8+ZqKBQEgUqDAKwKWXEFOEZhfQ5d4VMcheFOdIUFOKsorMkMC9iDqtADd5USg6yuGl+ZnRy1CgouWjAMPQAAFoAqhV0tDd8AAAAASUVORK5CYII=") no-repeat center; }
 
@@ -491,7 +403,7 @@ class StarlineCard extends HTMLElement {
 
 .wrapper { overflow: hidden; position: relative; height: 270px; padding: 20px 16px 0 16px; opacity: 0; transition: opacity .1s linear; font-size: 15px; line-height: 20px; color: #00aeef; }
 
-.__dark .wrapper { color: #fff; }
+.wrapper.__dark { color: #fff; }
 
 .wrapper.__title { padding-top: 0 !important; }
 
@@ -528,22 +440,12 @@ class StarlineCard extends HTMLElement {
 
         <div class="controls">
             <div class="control control-left">
-                <div class="control-in"></div>
-                <div class="control-s1"></div>
-                <div class="control-i1"></div>
-                <div class="control-s2"></div>
-                <div class="control-i2"></div>
                 <div class="control-icon"></div>
             </div>
             <div class="control control-center">
                 <div class="control-icon"></div>
             </div>
             <div class="control control-right">
-                <div class="control-in"></div>
-                <div class="control-s1"></div>
-                <div class="control-i1"></div>
-                <div class="control-s2"></div>
-                <div class="control-i2"></div>
                 <div class="control-icon"></div>
             </div>
         </div>
