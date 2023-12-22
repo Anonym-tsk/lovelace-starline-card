@@ -1,9 +1,9 @@
-const sass = require('node-sass');
-const b64img = require('css-b64-images');
-const imagemin = require('imagemin');
-const imageminPngquant = require('imagemin-pngquant');
-const replace = require('replace-in-file');
-const fs = require('fs-extra');
+import * as sass from 'node-sass';
+import * as b64img from 'css-b64-images'
+import imagemin from 'imagemin';
+import imageminPngquant from 'imagemin-pngquant';
+import replace from 'replace-in-file';
+import fs from 'fs-extra';
 
 fs.mkdirp('./tmp/assets');
 fs.emptyDirSync('./tmp/assets');
