@@ -698,15 +698,20 @@ class StarlineCard extends HTMLElement {
                     break;
                 case 'horn':
                     entity = 'horn';
-                    event = 'switch';
-                    action = 'turn_on';
+                    // TODO: удалить switch когда button будет добавлен в ха
+                    if (this._config.entities[entity].startsWith('button')) {
+                        event = 'button';
+                        action = 'press';
+                    } else {
+                        event = 'switch';
+                        action = 'turn_on';
+                    }
                     break;
             }
 
             if (entity) {
                 // У "сигнала" нет стейта, поэтому ждем меньше
                 this._startBtnProgress($element, entity === 'horn' ? 5000 : 30000);
-                // TODO: horn button
                 this._hass.callService(event, action, {
                     entity_id: this._config.entities[entity]
                 });
@@ -781,8 +786,7 @@ class StarlineCard extends HTMLElement {
             gsm_lvl: /^sensor\.(.+)_gsm_signal(_[0-9]+)?$/,
             hbrake: /^binary_sensor\.(.+)_hand_brake(_[0-9]+)?$/,
             hood: /^binary_sensor\.(.+)_hood(_[0-9]+)?$/,
-            // TODO: button
-            horn: /^switch\.(.+)_horn(_[0-9]+)?$/,
+            horn: /^(button|switch)\.(.+)_horn(_[0-9]+)?$/,
             location: /^device_tracker\.(.+)_location(_[0-9]+)?$/,
             out: /^switch\.(.+)_additional_channel(_[0-9]+)?$/,
             security: /^lock\.(.+)_security(_[0-9]+)?$/,
