@@ -832,8 +832,6 @@ class StarlineCard extends HTMLElement {
     getCardSize() {
         return 3;
     }
-
-    // TODO: visual editor
 }
 
 customElements.define('starline-card', StarlineCard);
