@@ -14,7 +14,10 @@ const ENTITY_NAMES = {
     'webasto': 'Heater',
     'out': 'Additional Channel',
     'security': 'Security',
-    'location': 'Location'
+    'location': 'Location',
+    'handsfree': 'Handsfree',
+    'neutral': 'Programmable neutral',
+    'moving_ban': 'Moving ban',
 };
 
 class StarlineCard extends HTMLElement {
@@ -58,6 +61,15 @@ class StarlineCard extends HTMLElement {
         this._gsm_lvl = {
             element: null,
             value: null
+        };
+        this._handsfree = {
+            element: null
+        };
+        this._neutral = {
+            element: null
+        };
+        this._moving_ban = {
+            element: null
         };
         this._controls = {
             security: null,
@@ -115,6 +127,9 @@ class StarlineCard extends HTMLElement {
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
 
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
+        this._handsfree.element = this.$wrapper.querySelector('.handsfree');
+        this._neutral.element = this.$wrapper.querySelector('.neutral');
+        this._moving_ban.element = this.$wrapper.querySelector('.moving-ban');
 
         this.$toast = this.$wrapper.querySelector('.toast');
 
@@ -205,6 +220,12 @@ class StarlineCard extends HTMLElement {
             '__offline': this._getAttr('gsm_lvl', 'online'),
         };
 
+        const icons = {
+            '__handsfree': this._getState('handsfree'),
+            '__neutral': this._getState('neutral'),
+            '__ban': this._getState('moving_ban'),
+        };
+
         Object.keys(states).forEach((className) => {
             const state = states[className];
 
@@ -212,6 +233,16 @@ class StarlineCard extends HTMLElement {
                 this.$container.classList.toggle(className, !state);
             } else if (state !== null) {
                 this.$container.classList.toggle(className, state);
+            }
+        });
+
+        Object.keys(icons).forEach((className) => {
+            const state = icons[className];
+
+            if (className === '__offline') {
+                this.$wrapper.classList.toggle(className, !state);
+            } else if (state !== null) {
+                this.$wrapper.classList.toggle(className, state);
             }
         });
 
@@ -256,6 +287,9 @@ class StarlineCard extends HTMLElement {
         });
 
         this._gsm_lvl.element.addEventListener('click', () => this._moreInfo('gsm_lvl'));
+        this._handsfree.element.addEventListener('click', () => this._moreInfo('handsfree'));
+        this._neutral.element.addEventListener('click', () => this._moreInfo('neutral'));
+        this._moving_ban.element.addEventListener('click', () => this._moreInfo('moving_ban'));
 
         this.$car.addEventListener('click', () => this._moreInfo('engine'));
         this.$security.addEventListener('click', () => this._moreInfo('security'));
@@ -419,7 +453,10 @@ class StarlineCard extends HTMLElement {
             security: /^lock\.(.+)_security(_[0-9]+)?$/,
             trunk: /^binary_sensor\.(.+)_trunk(_[0-9]+)?$/,
             webasto: /^switch\.(.+)_webasto(_[0-9]+)?$/,
-            // TODO: new sensors
+            handsfree: /^binary_sensor\.(.+)_handsfree(_[0-9]+)?$/,
+            neutral: /^binary_sensor\.(.+)_programmable_neutral(_[0-9]+)?$/,
+            moving_ban: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
+            // TODO: new sensors: GPS
         };
 
         const deviceId = this._config.device_id || this._hass.entities[this._config.entity_id].device_id;
