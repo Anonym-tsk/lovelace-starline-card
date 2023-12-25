@@ -67,7 +67,7 @@ dark: false
 Open _Integrations_ page, select _StarLine_ integration, find your device and select.
 Then copy the device_id from the browser address bar.
 
-![device_id](/screenshots/device_id.png)
+<img src='/screenshots/device_id.png' width='600' />
 
 #### Automatic configuration by entity_id
 
