@@ -19,6 +19,11 @@ const STARLINE_ENTITIES = {
         required: true,
         regex: /^sensor\.(.+)_engine_temperature(_[0-9]+)?$/,
     },
+    'gps': {
+        name: 'GPS Satellites',
+        required: false,
+        regex: /^sensor\.(.+)_gps_satellites(_[0-9]+)?$/,
+    },
     'gsm_lvl': {
         name: 'GSM Signal Level',
         required: true,
@@ -94,7 +99,6 @@ const STARLINE_ENTITIES = {
         required: false,
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
-    // TODO: new sensors: GPS
 };
 
 class StarlineCard extends HTMLElement {
@@ -103,6 +107,7 @@ class StarlineCard extends HTMLElement {
 
         this._config = {
             controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
+            info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
             entities: {},
             entity_id: null,
             device_id: null,
@@ -131,6 +136,10 @@ class StarlineCard extends HTMLElement {
                 value: null
             },
             etemp: {
+                element: null,
+                value: null
+            },
+            gps: {
                 element: null,
                 value: null
             }
@@ -202,6 +211,7 @@ class StarlineCard extends HTMLElement {
         this._info.battery.element = this.$wrapper.querySelector('.info-battery');
         this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
+        this._info.gps.element = this.$wrapper.querySelector('.info-gps');
 
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
         this._handsfree.element = this.$wrapper.querySelector('.handsfree');
@@ -346,11 +356,19 @@ class StarlineCard extends HTMLElement {
 
     _setInfo() {
         Object.keys(this._info).forEach((key) => {
-            const state = this._getState(key);
-            if (state !== null && state !== this._info[key].value) {
-                this._info[key].value = state;
-                this._info[key].element.textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+            let visible = false;
+
+            if (this._config.info.indexOf(key) > -1) {
+                const state = this._getState(key);
+                visible = state !== null;
+
+                if (state !== null && state !== this._info[key].value) {
+                    this._info[key].value = state;
+                    this._info[key].element.querySelector('.info-i-cnt').textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+                }
             }
+
+            this._info[key].element.classList.toggle('__hidden', !visible);
         });
 
         const gsm_lvl = this._getState('gsm_lvl');
@@ -559,6 +577,10 @@ class StarlineCard extends HTMLElement {
 
         if (config.controls) {
             Object.assign(this._config.controls, config.controls);
+        }
+
+        if (config.info) {
+            this._config.info = config.info;
         }
     }
 

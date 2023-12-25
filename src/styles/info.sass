@@ -1,42 +1,23 @@
-@mixin info-icon($name)
-    background: url('assets/' + $name + '.png') no-repeat center
-    .__dark &
-        background: url('assets/' + $name + '_dark.png') no-repeat center
-
 .info
     position: absolute
     left: 16px
     right: 16px
     bottom: 11px
     margin: 0 auto
-    max-width: 400px
+    max-width: 420px
     text-align: center
     white-space: nowrap
+    display: flex
+    flex-flow: row nowrap
+    justify-content: space-around
+    align-content: center
 
 .info-i
-    position: relative
     cursor: pointer
-    float: left
-    width: 25%
     height: 30px
     line-height: 30px
     vertical-align: middle
+    --mdc-icon-size: 20px
 
-    &:before
-        content: ''
-        display: inline-block
-        width: 23px
-        height: 18px
-        vertical-align: middle
-        margin-right: 4px
-        background-size: 23px auto !important
-        background-position: top left !important
-
-.info-balance:before
-    @include info-icon('car_status_sim')
-.info-battery:before
-    @include info-icon('car_status_storage_battery')
-.info-inner:before
-    @include info-icon('car_status_cabin_temperature')
-.info-engine:before
-    @include info-icon('car_status_engine_temperature')
+    &.__hidden
+        display: none

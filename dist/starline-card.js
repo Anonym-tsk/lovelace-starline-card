@@ -19,6 +19,11 @@ const STARLINE_ENTITIES = {
         required: true,
         regex: /^sensor\.(.+)_engine_temperature(_[0-9]+)?$/,
     },
+    'gps': {
+        name: 'GPS Satellites',
+        required: false,
+        regex: /^sensor\.(.+)_gps_satellites(_[0-9]+)?$/,
+    },
     'gsm_lvl': {
         name: 'GSM Signal Level',
         required: true,
@@ -94,7 +99,6 @@ const STARLINE_ENTITIES = {
         required: false,
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
-    // TODO: new sensors: GPS
 };
 
 class StarlineCard extends HTMLElement {
@@ -103,6 +107,7 @@ class StarlineCard extends HTMLElement {
 
         this._config = {
             controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
+            info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
             entities: {},
             entity_id: null,
             device_id: null,
@@ -131,6 +136,10 @@ class StarlineCard extends HTMLElement {
                 value: null
             },
             etemp: {
+                element: null,
+                value: null
+            },
+            gps: {
                 element: null,
                 value: null
             }
@@ -359,27 +368,11 @@ class StarlineCard extends HTMLElement {
 
 .car-security-5 { transform: scaleX(-1); left: 294px; }
 
-.info { position: absolute; left: 16px; right: 16px; bottom: 11px; margin: 0 auto; max-width: 400px; text-align: center; white-space: nowrap; }
+.info { position: absolute; left: 16px; right: 16px; bottom: 11px; margin: 0 auto; max-width: 420px; text-align: center; white-space: nowrap; display: flex; flex-flow: row nowrap; justify-content: space-around; align-content: center; }
 
-.info-i { position: relative; cursor: pointer; float: left; width: 25%; height: 30px; line-height: 30px; vertical-align: middle; }
+.info-i { cursor: pointer; height: 30px; line-height: 30px; vertical-align: middle; --mdc-icon-size: 20px; }
 
-.info-i:before { content: ''; display: inline-block; width: 23px; height: 18px; vertical-align: middle; margin-right: 4px; background-size: 23px auto !important; background-position: top left !important; }
-
-.info-balance:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAuBAMAAACMkMmDAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUdwTC2u5iyv5i2v5i2v5iyv5iyv5iyv5iyv5iyv5i2v5kysCBcAAAAKdFJOUwC6xGkygZjbFz621qezAAAAuklEQVQ4y2NgGMqAbRUWsABVTRZhNayrCKuJIqwGuzGoaqIIq8FhDIqaKMJqcBmDrAbJGOUpLiAwtQpNDZIxi1HFFmAzxgBVcAEWYxYh7GdHUWOFULMU7BgXB6AoM4oaLQzvKABFWYhQw0FrNYuNgaBqVVkaEOBSswLEr8ISFzRQs4QINYvR0gs2NcsRatpxhk8CXI0UTjULG6CCjatwh/PCYFAwGgeuWkUgLvD6a8SpSRTECQQGY8kNAL3NG8rLBId3AAAAAElFTkSuQmCC") no-repeat center; }
-
-.__dark .info-balance:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAuBAMAAACWrCkNAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAtUExURUdwTP///////////////////////////////////////////////////////81e3QIAAAAOdFJOUwBEiGlamTLurz0eS8WhrFdikwAAANpJREFUOMtjYBhIwCiIDSxAU9X3DhswQFXE8Y4YVX3PlTCBBpoqjneVWNzKgqaq7/kEwqqwG4WuCrtRaKpwGIWmCodRqKqQjVocCgZBEzBUIRnFBAvONwvQVCEbdQ8e6lVoqpCMYkHEzRtUVchGsSNF4QYUVXZIHmRLA4N0kKoAVFWPMUIAbOQBVFVPBlLVPqjnMGOIVqrkiFKVB1JlBgnaBThV4YmhJ8jJDldso4QXzpSDogpnKkQNe1wpGksMEQiJIajqhRIugFTK2b3DA0hUtVAQD1gwILUKANAySFLo3WiTAAAAAElFTkSuQmCC") no-repeat center; }
-
-.info-battery:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEUAAAAtBAMAAAAKBLstAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAhUExURUdwTCyv5i2s6C2u5i2z4i2v5i2u5iyv5iyv5S2v5i2v5rg5DywAAAAKdFJOUwDEIboQmOOCYTMgv0yIAAAAhklEQVQ4y2NgoD/gMAaCABiPFcRrQFfDvgoIBGA8RhCvgBZqlIBAFSQqpAQFiiBeEIgFUyO1CidYOKqGbDULZ87MIqRmMQMDzdQsCwWDKKiK0AgGhtJQKTQ1EBYXRM0KCK8KVc1CKqlZ5gIGXlA1Li4MDC4uVQMXPuSoWWZsPJrmqa1mqAEAwNgptIyO11AAAAAASUVORK5CYII=") no-repeat center; }
-
-.__dark .info-battery:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAwBAMAAACvcErmAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAnUExURUdwTP///////////////////////////////////////////////w2imYoAAAAMdFJOUwDM4e+DXtLDSKsnGpq6ONQAAACnSURBVDjLY2AY5IBDEAgk4NxGELcBU9UZIDgK58aAuOSrcmCIQVJ1lIGFLFXJxkAAUnXYGAZsQKpADDO4Kh2QI0CqziAASBUIHEKoOgjydwBDoCACiDKwgihhJFUKOIORbTir4l61mghV7GeODwpVLmDgChVZ4uJ05pCLywJ0VZCUcBI5qZ45EzDwqgZrqKIDlilThn26J1vVGdyAVFUTBXEDSYYhDwBkesiFPuFQJQAAAABJRU5ErkJggg==") no-repeat center; }
-
-.info-inner:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAsCAMAAADvnz6KAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAA2UExURUdwTCyv5iyv5iyv5iyv5iyv5iyw5Syv5i2v5i2v5i2v5iyv5iyu5iyv5i2v5i2p4iyu5y2v5mFYwaUAAAARdFJOUwDJift1rBjb72efNLxGVAcmP6zsygAAAbhJREFUSMfNVouOhCAMlPdTsP//swes56lQQJNNbhKzuq2lLdORZfkmtsCpFcInkIT8K4SlPGzzMaJRgEKZOJkJSd7ap7VNCOuOEEzKz+tkIlMZyZSKdZjV2ZSQnAhDQK89+6qBjOviAKHvEQD4sCQNYuQjQI/KssCGHdwYWNTGBfHUsHEyOR1mqCeCVyum9wHyBW4cxhUGJW9mbhb9Sy+yTO3mDn0zHLwNM2HCwem6NarUxTkt00SIytA7ykMarjxZlPPiqhrNybNE0Eli9V8oB1d4hBVl3iO0OdgpCSm0WZaFx2hw2cALmMacvEA1f6I07UGTP763AZQ5GZqSMmIiLSZMSoPmO1l1Zie25KofRHH5N0Cm2qZD0iLtRaHxJJS3qtSFlbH3gbmyXlU6cRKaTjr0KjsXpYiFTNysTsYBiUrpUbrV8ELYM5PleScV8Z2N156os1kiYR7iC2Hi+zCxqehPoduK/hRX3vi3YTyqWcE5Vw40Bbzgc5+PO8kYUOWiSO/bot0m9ZW2bPy1Y5j+OaxpTZw2xGEWPw7j0TUDa1fbxNFJFuqzYZ44rcTE+VCKj691y7/ED3I3W3W8w7TkAAAAAElFTkSuQmCC") no-repeat center; }
-
-.__dark .info-inner:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAvCAMAAACYABepAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAA8UExURUdwTP///////////////////////////////////////////////////////////////////////////4/JsPUAAAATdFJOUwAhu3Lb5MxBVO4O+WOKgKowmhh/4obYAAACUklEQVRIx81W25KsIAyUaxCRi/z/vy7ggJYwgFt1Tm2/7OxMjEm6O7As/wESWQARoALiXwCL5OssBK++iRWTF9kOt/kONndMJoKznJVxbJzbM5zBnH1+gqlENhS07fClBwl7/H0mlWTeU9SLQNR7NjEsHYpH/RAUetTjaYcoMQoS4W29qVuld+W8x+PCsfdO7VrZJmM8k4zGmVCWCYcmYyfcDMGuiKtKZUJ+AlFKsSR5IBu8AqddTqR/rUVHpA1FUQEJfZhnJu43cSwQ3sLWrsJTIWuQioflEJvnjZqirP0LnIKvakIsv47y4JLTJpoEqIT4iSTPGIw5LYWzmh8pNJ8j7qKPa9HUuqQz0r2bgcqvcuNvlhj/JuIJw9X229te2uDdZoWt5dG4TMjbJU1a60U3lDGGaXBEkwA0dmJqSR/CYZ2kwJ4GTjzoJDY83k84BepUlK06DlPKJxNTvTwqe2qVi6qm62Jue3mqwyJcUekRV6lS3mNMd8oZYpGVOqlfw9swzf3RrrTP3iiGOJBHKCscHBYE0Z2hC00E2KN68NsXs/iHmdKcfoNqToG732WqNlGgtrgEISQ7x76UIaC4phLMflM9LgcIPcH550PZ3vjmsr1yi3gKpgN+22oPtwT/qGuIazw/zkrY+gE7q+MYm/Wi5/5cMVOuUg7vGMlaZSoPi8qrYju8GrhrqPzG1PUVlNb18HwSpZXKoaHhzWiiSDw/xfAixlOo2aoxXdx/Nlj/Knq7q7dGSvIqpMPDCmherl+OIxRvS2CnrtoglAC0/G38AID3Nkn2woOmAAAAAElFTkSuQmCC") no-repeat center; }
-
-.info-engine:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEYAAAAuBAMAAABnp3KAAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAtUExURUdwTCyv5iyy4yyv5iyv5iyw5S2v5iyv5i2u5yyv5i2u5Syu5Cyv5iyv5i2v5o+FlToAAAAOdFJOUwC2E8/oRC2IVWc7B5d4r+LsewAAAUZJREFUOMtjYECATUpwwIALrHsHA0+GjJpEQUFhoILHgoKCDHgAJ1DNKwb8gF5quNNCw9KBal5mpS1Lw6FG+R0SaMCqhMkOWY0TurQCiNiIrOTdQzR3TC4AkXIoat5NQFFy5V0BhjFolrG/A6phdPFDU4NiGQdIDcs7DACyjF1QBmwnGw41z4ByzBCKgcEPu5rHG8Bq3oLVyGFXA/IJUM1jsJq6dxIdLVjUPAWrebcBpKbvHXbwxNgYFPQJIDV57/CCBSA1fPjVgGOXGb8acAAx4ldzAaLG9u4V3GoKIGoOYA0fEtQcoLYaRmM7gu5hYOAh4PcDWNIzqhqmy2ArN+OLC2jeYbLDE6cwoIJdTQKyGjb0rCE5cwpGkbYOw9fMGBmWFZuat2j5vg+LmkdYSih0NQLoBUhGR0dHKBwkMLB2tG5gIAoAABOqElAAEQp6AAAAAElFTkSuQmCC") no-repeat center; }
-
-.__dark .info-engine:before { background: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAEkAAAAyCAMAAAAnSAbsAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAzUExURUdwTP///////////////////////////////////////////////////////////////8/RimEAAAAQdFJOUwC8doep1GZVMO4SPJUkB0mhq5EuAAABeklEQVRIx+2W0bqFEBCFCYWQ93/aM0rFLoO9Ozdnn3VV36c/lmUGIV+p6UbLWyR/I/FP+kXSuMpEBlvfpg+ysETS/HGq/iZJ8k00kmh8Z90g5Qsa+kC2CPLK1r82x6MGEL8dNEA6Xc0Xrw6QAF8K48E31CoXjF1JEpKMgNZ1SwyldhLbzpcuH6JkfU6C7GXSCYlq5Kfc+93R+WY3WUIa0dmv27GkpLxATAlJ1mOv9E4K0c3WZztIxOwZAdIIcxivloN8A8nB5poBBMjRnradlkfJ+lk6B4/kNcSshxSicJDUjeXtJCJ3aSJeSLKPlPmiLiQKEt0kSOqF1JqCC8k9Q4Io6AKJcvkQCSK69K2uTOpqJSXHI03JR0hh6Q2Fv5AnBzU3+4/Aqp1GMh6mldd1DDUk7U95ihZGrCtkJF1qaCmKYySz1adhqbbl0I4MQpq3bRpYPTLhasCme/GDxIVXrra9s8c0H6WIt9+dKqSW82CnskJGdHiw5Cv0A44GK1es6NCLAAAAAElFTkSuQmCC") no-repeat center; }
+.info-i.__hidden { display: none; }
 
 @keyframes smoke { 0% { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACcAAABVBAMAAAA4Z+DMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAnUExURUdwTCyv5iyu5iyv5iuw5IaEky+v5yyv5i2u5yyv5uZRDy2v5y2v5lCbFAcAAAAMdFJOUwCB9c4kFAjhTbEoZGK0yqEAAABjSURBVDjLY2AYBYMJBGATXEC0YMBoCI6CUTAKiAYsgg6YYnPOKIorogkynwEBAWyCKqiC3GDB46jmstWARQ1QldqABRVQxDjAYocaUAQ5z5w5LHRYFMOiaawJ6K5vVkwgwt8Ajosmd/c+ZGEAAAAASUVORK5CYII="); }
   33% { background-image: url("data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACcAAABVBAMAAAA4Z+DMAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAAqUExURUdwTCyv5iyv5iyv5iyv5iyv5i2t6Syv5iyv5iyv5iuv5Syv5i2u5i2v5tjmauoAAAANdFJOUwCVei+z+A/Xxlwe7kK24q1yAAAA+ElEQVQ4y2NgGAWjYBQMVZCAKcTjetUZXYyr9+7dqxPgXLbFIH2z7wLBJagQs3js3RsTGFLugsEBiDJfEPu64l6IYANYkAXMvnoXCgrAgmfvogABsKAsitj1BCyCmxmwCELdORdZ7ArUmbbIgjC3c2ATZMamnSEWSfAqLPB6sdjOoIvpITTrG6CCjNgE2YB+2uINFVSAWc+sqMPAVQsWu4gaQ6tBYiEHUAWZe+9el8SIYi7jBOolIGZFAwwxLt+7QeqBaILsqD5BDvkoVEFOSHwvQBXdixI8UAAJig2o6RcSORNQBIGp7obqdS0Mi9zYMMJi+kZi/A0Ag+QDeMVSCacAAAAASUVORK5CYII="); }
@@ -497,7 +490,7 @@ class StarlineCard extends HTMLElement {
 
 .__dark .toast { background: rgba(255, 255, 255, 0.9); color: #444; }
 
-.icon-btn { display: inline-block; text-align: center; cursor: pointer; width: 28px; height: 28px; }
+.icon-btn { display: inline-block; text-align: center; cursor: pointer; width: 28px; height: 28px; --mdc-icon-size: 22px; }
 
 .gsm-lvl { float: right; }
 
@@ -562,10 +555,26 @@ class StarlineCard extends HTMLElement {
     </div>
 
     <div class="info">
-        <div class="info-i info-balance"></div>
-        <div class="info-i info-battery"></div>
-        <div class="info-i info-inner"></div>
-        <div class="info-i info-engine"></div>
+        <div class="info-i info-balance">
+            <ha-icon icon="mdi:sim"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
+        <div class="info-i info-battery">
+            <ha-icon icon="mdi:car-battery"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
+        <div class="info-i info-inner">
+            <ha-icon icon="mdi:car"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
+        <div class="info-i info-engine">
+            <ha-icon icon="mdi:engine"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
+        <div class="info-i info-gps">
+            <ha-icon icon="mdi:satellite-variant"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
     </div>
 
     <ha-icon class="gsm-lvl icon-btn" icon="mdi:signal-cellular-outline"></ha-icon>
@@ -591,6 +600,7 @@ class StarlineCard extends HTMLElement {
         this._info.battery.element = this.$wrapper.querySelector('.info-battery');
         this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
+        this._info.gps.element = this.$wrapper.querySelector('.info-gps');
 
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
         this._handsfree.element = this.$wrapper.querySelector('.handsfree');
@@ -735,11 +745,19 @@ class StarlineCard extends HTMLElement {
 
     _setInfo() {
         Object.keys(this._info).forEach((key) => {
-            const state = this._getState(key);
-            if (state !== null && state !== this._info[key].value) {
-                this._info[key].value = state;
-                this._info[key].element.textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+            let visible = false;
+
+            if (this._config.info.indexOf(key) > -1) {
+                const state = this._getState(key);
+                visible = state !== null;
+
+                if (state !== null && state !== this._info[key].value) {
+                    this._info[key].value = state;
+                    this._info[key].element.querySelector('.info-i-cnt').textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+                }
             }
+
+            this._info[key].element.classList.toggle('__hidden', !visible);
         });
 
         const gsm_lvl = this._getState('gsm_lvl');
@@ -948,6 +966,10 @@ class StarlineCard extends HTMLElement {
 
         if (config.controls) {
             Object.assign(this._config.controls, config.controls);
+        }
+
+        if (config.info) {
+            this._config.info = config.info;
         }
     }
 
