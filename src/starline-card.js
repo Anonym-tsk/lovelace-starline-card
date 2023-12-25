@@ -1,23 +1,100 @@
-const ENTITY_NAMES = {
-    'battery': 'Battery',
-    'balance': 'Balance',
-    'ctemp': 'Interior Temperature',
-    'etemp': 'Engine Temperature',
-    'gsm_lvl': 'GSM Signal Level',
-    'hbrake': 'Hand Brake',
-    'hood': 'Hood',
-    'horn': 'Horn',
-    'trunk': 'Trunk',
-    'alarm': 'Alarm Status',
-    'door': 'Doors Status',
-    'engine': 'Engine',
-    'webasto': 'Heater',
-    'out': 'Additional Channel',
-    'security': 'Security',
-    'location': 'Location',
-    'handsfree': 'Handsfree',
-    'neutral': 'Programmable neutral',
-    'moving_ban': 'Moving ban',
+const STARLINE_ENTITIES = {
+    'battery': {
+        name: 'Battery',
+        required: true,
+        regex: /^sensor\.(.+)_battery(_[0-9]+)?$/,
+    },
+    'balance': {
+        name: 'Balance',
+        required: true,
+        regex: /^sensor\.(.+)_balance(_[0-9]+)?$/,
+    },
+    'ctemp': {
+        name: 'Interior Temperature',
+        required: true,
+        regex: /^sensor\.(.+)_interior_temperature(_[0-9]+)?$/,
+    },
+    'etemp': {
+        name: 'Engine Temperature',
+        required: true,
+        regex: /^sensor\.(.+)_engine_temperature(_[0-9]+)?$/,
+    },
+    'gsm_lvl': {
+        name: 'GSM Signal Level',
+        required: true,
+        regex: /^sensor\.(.+)_gsm_signal(_[0-9]+)?$/,
+    },
+    'hbrake': {
+        name: 'Hand Brake',
+        required: false,
+        regex: /^binary_sensor\.(.+)_hand_brake(_[0-9]+)?$/,
+    },
+    'hood': {
+        name: 'Hood',
+        required: true,
+        regex: /^binary_sensor\.(.+)_hood(_[0-9]+)?$/,
+    },
+    'horn': {
+        name: 'Horn',
+        required: true,
+        regex: /^(button|switch)\.(.+)_horn(_[0-9]+)?$/,
+    },
+    'trunk': {
+        name: 'Trunk',
+        required: true,
+        regex: /^binary_sensor\.(.+)_trunk(_[0-9]+)?$/,
+    },
+    'alarm': {
+        name: 'Alarm Status',
+        required: true,
+        regex: /^binary_sensor\.(.+)_alarm(_[0-9]+)?$/,
+    },
+    'door': {
+        name: 'Doors Status',
+        required: true,
+        regex: /^binary_sensor\.(.+)_doors(_[0-9]+)?$/,
+    },
+    'engine': {
+        name: 'Engine',
+        required: true,
+        regex: /^switch\.(.+)_engine(_[0-9]+)?$/,
+    },
+    'webasto': {
+        name: 'Heater',
+        required: false,
+        regex: /^switch\.(.+)_webasto(_[0-9]+)?$/,
+    },
+    'out': {
+        name: 'Additional Channel',
+        required: false,
+        regex: /^switch\.(.+)_additional_channel(_[0-9]+)?$/,
+    },
+    'security': {
+        name: 'Security',
+        required: true,
+        regex: /^lock\.(.+)_security(_[0-9]+)?$/,
+    },
+    'location': {
+        name: 'Location',
+        required: true,
+        regex: /^device_tracker\.(.+)_location(_[0-9]+)?$/,
+    },
+    'handsfree': {
+        name: 'Handsfree',
+        required: false,
+        regex: /^binary_sensor\.(.+)_handsfree(_[0-9]+)?$/,
+    },
+    'neutral': {
+        name: 'Programmable neutral',
+        required: false,
+        regex: /^binary_sensor\.(.+)_programmable_neutral(_[0-9]+)?$/,
+    },
+    'moving_ban': {
+        name: 'Moving ban',
+        required: false,
+        regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
+    },
+    // TODO: new sensors: GPS
 };
 
 class StarlineCard extends HTMLElement {
@@ -154,7 +231,12 @@ class StarlineCard extends HTMLElement {
     }
 
     _getState(entity_id) {
-        const entity = this._hass.states[this._config.entities[entity_id]];
+        const entityName = this._config.entities[entity_id];
+        if (!entityName) {
+            return null;
+        }
+
+        const entity = this._hass.states[entityName];
         const state = entity ? entity.state : 'unavailable';
 
         if (state === 'on' || state === 'off' || state === 'unlocked' || state === 'locked') {
@@ -169,7 +251,12 @@ class StarlineCard extends HTMLElement {
     }
 
     _getAttr(entity_id, name) {
-        const entity = this._hass.states[this._config.entities[entity_id]];
+        const entityName = this._config.entities[entity_id];
+        if (!entityName) {
+            return null;
+        }
+
+        const entity = this._hass.states[entityName];
 
         if (!entity || !entity.attributes.hasOwnProperty(name)) {
             return null;
@@ -239,9 +326,7 @@ class StarlineCard extends HTMLElement {
         Object.keys(icons).forEach((className) => {
             const state = icons[className];
 
-            if (className === '__offline') {
-                this.$wrapper.classList.toggle(className, !state);
-            } else if (state !== null) {
+            if (state !== null) {
                 this.$wrapper.classList.toggle(className, state);
             }
         });
@@ -436,37 +521,17 @@ class StarlineCard extends HTMLElement {
             return;
         }
 
-        const matchRegex = {
-            alarm: /^binary_sensor\.(.+)_alarm(_[0-9]+)?$/,
-            balance: /^sensor\.(.+)_balance(_[0-9]+)?$/,
-            battery: /^sensor\.(.+)_battery(_[0-9]+)?$/,
-            ctemp: /^sensor\.(.+)_interior_temperature(_[0-9]+)?$/,
-            door: /^binary_sensor\.(.+)_doors(_[0-9]+)?$/,
-            engine: /^switch\.(.+)_engine(_[0-9]+)?$/,
-            etemp: /^sensor\.(.+)_engine_temperature(_[0-9]+)?$/,
-            gsm_lvl: /^sensor\.(.+)_gsm_signal(_[0-9]+)?$/,
-            hbrake: /^binary_sensor\.(.+)_hand_brake(_[0-9]+)?$/,
-            hood: /^binary_sensor\.(.+)_hood(_[0-9]+)?$/,
-            horn: /^(button|switch)\.(.+)_horn(_[0-9]+)?$/,
-            location: /^device_tracker\.(.+)_location(_[0-9]+)?$/,
-            out: /^switch\.(.+)_additional_channel(_[0-9]+)?$/,
-            security: /^lock\.(.+)_security(_[0-9]+)?$/,
-            trunk: /^binary_sensor\.(.+)_trunk(_[0-9]+)?$/,
-            webasto: /^switch\.(.+)_webasto(_[0-9]+)?$/,
-            handsfree: /^binary_sensor\.(.+)_handsfree(_[0-9]+)?$/,
-            neutral: /^binary_sensor\.(.+)_programmable_neutral(_[0-9]+)?$/,
-            moving_ban: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
-            // TODO: new sensors: GPS
-        };
+        // Чтобы каждый раз не обходить весь список, сделаем копию и будем удалять элементы
+        const entitiesToAdd = {...STARLINE_ENTITIES};
 
         const deviceId = this._config.device_id || this._hass.entities[this._config.entity_id].device_id;
         const deviceEntities = Object.values(this._hass.entities).filter(({device_id}) => device_id === deviceId);
 
         for (const entity of deviceEntities) {
-            for (const [key, regex] of Object.entries(matchRegex)) {
-                if (regex.test(entity.entity_id)) {
+            for (const [key, data] of Object.entries(entitiesToAdd)) {
+                if (data.regex.test(entity.entity_id)) {
                     this._config.entities[key] = entity.entity_id;
-                    delete matchRegex[key];
+                    delete entitiesToAdd[key];
                 }
             }
         }
@@ -483,9 +548,9 @@ class StarlineCard extends HTMLElement {
         }
 
         if (config.entities && !config.entity_id && !config.device_id) {
-            for (const [key, name] of Object.entries(ENTITY_NAMES)) {
-                if (!config.entities[key]) {
-                    throw new Error(`You need to define an entity: ${name}`);
+            for (const [key, data] of Object.entries(STARLINE_ENTITIES)) {
+                if (data.required && !config.entities[key]) {
+                    throw new Error(`You need to define an entity: ${data.name}`);
                 }
             }
 
