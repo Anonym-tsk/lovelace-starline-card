@@ -15,5 +15,4 @@ node_modules/*
 .ant-targets-build.xml
 /local.properties
 .ant_targets
-package-lock.json
 .sass-cache

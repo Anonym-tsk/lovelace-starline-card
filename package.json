@@ -1,6 +1,6 @@
 {
   "name": "lovelace-starline-card",
-  "version": "1.1.0",
+  "version": "1.2.1",
   "description": "Custom Lovelace Card for StarLine integration",
   "type": "module",
   "scripts": {
