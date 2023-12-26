@@ -1,3 +1,7 @@
+/**
+ * lovelace-starline-card v1.1.0
+ * Tue, 26 Dec 2023 12:31:12 GMT
+ */
 const STARLINE_ENTITIES = {
     'battery': {
         name: 'Battery',
@@ -100,6 +104,7 @@ const STARLINE_ENTITIES = {
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
 };
+
 class StarlineCard extends HTMLElement {
     constructor() {
         super();
@@ -895,6 +900,7 @@ class StarlineCard extends HTMLElement {
         return 3;
     }
 }
+
 customElements.define('starline-card', StarlineCard);
 window.customCards = window.customCards || [];
 window.customCards.push({

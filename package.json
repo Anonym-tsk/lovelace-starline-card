@@ -4,7 +4,7 @@
   "description": "Custom Lovelace Card for StarLine integration",
   "type": "module",
   "scripts": {
-    "prebuild": "tsc",
+    "prebuild": "rollup -c",
     "build": "node scripts/build.js"
   },
   "repository": {
@@ -18,12 +18,16 @@
   },
   "homepage": "https://github.com/Anonym-tsk/lovelace-starline-card/blob/master/README.md",
   "devDependencies": {
+    "@rollup/plugin-commonjs": "^25.0.7",
+    "@rollup/plugin-node-resolve": "^15.2.3",
     "css-b64-images": "^0.2.5",
     "fs-extra": "^11.2.0",
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "node-sass": "^9.0.0",
     "replace-in-file": "^7.0.2",
+    "rollup": "^4.9.1",
+    "rollup-plugin-typescript2": "^0.36.0",
     "typescript": "^5.3.3"
   }
 }
