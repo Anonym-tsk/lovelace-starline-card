@@ -58,7 +58,7 @@
     "strictPropertyInitialization": false
   },
 
-  "files": ["src/starline-card.ts", "src/global.d.ts"],
+  "files": ["src/starline.ts", "src/global.d.ts"],
   "exclude": ["dist/**", "node_modules/**", "./**/*.test.ts", "./**/*.node.ts"],
   "include": ["./src/**/*.ts"]
 }

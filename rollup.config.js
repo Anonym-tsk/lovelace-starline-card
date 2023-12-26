@@ -15,7 +15,7 @@ const externalDeps = [
 ];
 
 export default {
-    input: './src/starline-card.ts',
+    input: './src/starline.ts',
     external: externalDeps,
     plugins: [
         resolve(),
