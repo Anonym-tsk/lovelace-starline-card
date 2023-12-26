@@ -4,6 +4,7 @@
   "description": "Custom Lovelace Card for StarLine integration",
   "type": "module",
   "scripts": {
+    "prebuild": "tsc",
     "build": "node scripts/build.js"
   },
   "repository": {
@@ -22,6 +23,7 @@
     "imagemin": "^8.0.1",
     "imagemin-pngquant": "^9.0.2",
     "node-sass": "^9.0.0",
-    "replace-in-file": "^7.0.2"
+    "replace-in-file": "^7.0.2",
+    "typescript": "^5.3.3"
   }
 }

@@ -1,4 +1,30 @@
-const STARLINE_ENTITIES = {
+declare type ConfigEntity = 'battery' | 'balance' | 'ctemp' | 'etemp'
+    | 'gps' | 'gsm_lvl' | 'hbrake' | 'hood' | 'horn' | 'trunk'
+    | 'alarm' | 'door' | 'engine' | 'webasto' | 'out' | 'security'
+    | 'location' | 'handsfree' | 'neutral' | 'moving_ban';
+
+declare type ConfigInfo = 'balance' | 'battery' | 'ctemp' | 'etemp' | 'gps'; // TODO: Extract?
+
+declare type ConfigControls = 'arm' | 'ign' | 'horn' | 'webasto' | 'out'; // TODO: Extract?
+
+declare interface Config {
+    title?: string;
+    controls: ConfigControls[];
+    info: ConfigInfo[];
+    entities?: {[key in ConfigEntity]: string};
+    entity_id?: string;
+    device_id?: string;
+    dark?: boolean;
+}
+
+declare interface UIElement {
+    element: HTMLElement & {icon?: string} | null;
+    value?: StateValue | null;
+}
+
+declare type ClickPosition = 'left' | 'center' | 'right';
+
+const STARLINE_ENTITIES: {[key in ConfigEntity]: {name: string, required: boolean, regex: RegExp}} = {
     'battery': {
         name: 'Battery',
         required: true,
@@ -102,82 +128,86 @@ const STARLINE_ENTITIES = {
 };
 
 class StarlineCard extends HTMLElement {
-    constructor() {
-        super();
+    private _config: Config = {
+        controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
+        info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
+        dark: false
+    };
 
-        this._config = {
-            controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
-            info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
-            entities: {},
-            entity_id: null,
-            device_id: null,
-            dark: false
-        };
-        this._hass = {};
+    private _hass: Hass | null = null;
 
-        this._clickTimeouts = {
-            left: null,
-            center: null,
-            right: null
-        };
-        this._inProgressTimeout = null;
+    private _clickTimeouts: {[key in ClickPosition]: number | null} = {
+        left: null,
+        center: null,
+        right: null
+    };
 
-        this._info = {
-            balance: {
-                element: null,
-                value: null
-            },
-            battery: {
-                element: null,
-                value: null
-            },
-            ctemp: {
-                element: null,
-                value: null
-            },
-            etemp: {
-                element: null,
-                value: null
-            },
-            gps: {
-                element: null,
-                value: null
-            }
-        };
-        this._gsm_lvl = {
+    private _inProgressTimeout: number | null = null;
+
+    private _info: {[key in ConfigInfo]: UIElement} = {
+        balance: {
             element: null,
             value: null
-        };
-        this._handsfree = {
-            element: null
-        };
-        this._neutral = {
-            element: null
-        };
-        this._moving_ban = {
-            element: null
-        };
-        this._controls = {
-            security: null,
-            engine: null,
-            out: null,
-            webasto: null
-        };
+        },
+        battery: {
+            element: null,
+            value: null
+        },
+        ctemp: {
+            element: null,
+            value: null
+        },
+        etemp: {
+            element: null,
+            value: null
+        },
+        gps: {
+            element: null,
+            value: null
+        }
+    };
 
-        this.$wrapper = null;
-        this.$container = null;
+    private _gsm_lvl: UIElement = {
+        element: null,
+        value: null
+    };
 
-        this.$car = null;
-        this.$security = null;
+    private _handsfree: UIElement = {
+        element: null
+    };
 
-        this.$controlLeft = null;
-        this.$controlCenter = null;
-        this.$controlRight = null;
+    private _neutral: UIElement = {
+        element: null
+    };
 
-        this.$toast = null;
+    private _moving_ban: UIElement = {
+        element: null
+    };
+
+    private _controls: {[key: string]: StateValue | null} = {
+        security: null,
+        engine: null,
+        out: null,
+        webasto: null
+    };
+
+    private $wrapper: HTMLElement | null = null;
+    private $container: HTMLElement | null = null;
+
+    private $car: HTMLElement | null = null;
+    private $security: HTMLElement | null = null;
+
+    private $controlLeft: HTMLElement | null = null;
+    private $controlCenter: HTMLElement | null = null;
+    private $controlRight: HTMLElement | null = null;
+
+    private $toast: HTMLElement | null = null;
+
+    constructor() {
+        super();
     }
 
-    set hass(hass) {
+    set hass(hass: Hass) {
         this._hass = hass;
         this._updateEntitiesConfig();
 
@@ -188,8 +218,8 @@ class StarlineCard extends HTMLElement {
         this._update();
     }
 
-    _render() {
-        const card = document.createElement('ha-card');
+    _render(): void {
+        const card = document.createElement('ha-card') as HTMLElement & { header: string };
         const style = document.createElement('style');
         card.header = this._config.title || '';
         style.textContent = `{%css%}`;
@@ -197,30 +227,30 @@ class StarlineCard extends HTMLElement {
         card.appendChild(style);
         this.appendChild(card);
 
-        this.$wrapper = card.querySelector('.wrapper');
-        this.$container = this.$wrapper.querySelector('.container');
+        this.$wrapper = card.querySelector<HTMLElement>('.wrapper')!;
+        this.$container = this.$wrapper.querySelector<HTMLElement>('.container')!;
 
-        this.$car = this.$container.querySelector('.car-cnt');
-        this.$security = this.$container.querySelector('.car-security');
+        this.$car = this.$container.querySelector<HTMLElement>('.car-cnt')!;
+        this.$security = this.$container.querySelector<HTMLElement>('.car-security')!;
 
-        this.$controlLeft = this.$container.querySelector('.control-left');
-        this.$controlCenter = this.$container.querySelector('.control-center');
-        this.$controlRight = this.$container.querySelector('.control-right');
+        this.$controlLeft = this.$container.querySelector<HTMLElement>('.control-left')!;
+        this.$controlCenter = this.$container.querySelector<HTMLElement>('.control-center')!;
+        this.$controlRight = this.$container.querySelector<HTMLElement>('.control-right')!;
 
-        this._info.balance.element = this.$wrapper.querySelector('.info-balance');
-        this._info.battery.element = this.$wrapper.querySelector('.info-battery');
-        this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
-        this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
-        this._info.gps.element = this.$wrapper.querySelector('.info-gps');
+        this._info.balance.element = this.$wrapper.querySelector<HTMLElement>('.info-balance')!;
+        this._info.battery.element = this.$wrapper.querySelector<HTMLElement>('.info-battery')!;
+        this._info.ctemp.element = this.$wrapper.querySelector<HTMLElement>('.info-inner')!;
+        this._info.etemp.element = this.$wrapper.querySelector<HTMLElement>('.info-engine'!);
+        this._info.gps.element = this.$wrapper.querySelector<HTMLElement>('.info-gps')!;
 
-        this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
-        this._handsfree.element = this.$wrapper.querySelector('.handsfree');
-        this._neutral.element = this.$wrapper.querySelector('.neutral');
-        this._moving_ban.element = this.$wrapper.querySelector('.moving-ban');
+        this._gsm_lvl.element = this.$wrapper.querySelector<HTMLElement>('.gsm-lvl')!;
+        this._handsfree.element = this.$wrapper.querySelector<HTMLElement>('.handsfree')!;
+        this._neutral.element = this.$wrapper.querySelector<HTMLElement>('.neutral')!;
+        this._moving_ban.element = this.$wrapper.querySelector<HTMLElement>('.moving-ban')!;
 
-        this.$toast = this.$wrapper.querySelector('.toast');
+        this.$toast = this.$wrapper.querySelector<HTMLElement>('.toast')!;
 
-        if (this._hass.language === 'ru') {
+        if (this._hass?.language === 'ru') {
             // Ugly?
             this.$toast.textContent = 'Нажмите дважды для выполнения';
         }
@@ -228,7 +258,7 @@ class StarlineCard extends HTMLElement {
         this._setControls();
         this._initHandlers();
         setTimeout(() => {
-            this.$wrapper.style.opacity = '1';
+            this.$wrapper!.style.opacity = '1';
         }, 10);
     }
 
@@ -240,13 +270,13 @@ class StarlineCard extends HTMLElement {
         this._setInfo();
     }
 
-    _getState(entity_id) {
-        const entityName = this._config.entities[entity_id];
+    _getState(entity_id: ConfigEntity): StateValue | null {
+        const entityName = this._config.entities?.[entity_id];
         if (!entityName) {
             return null;
         }
 
-        const entity = this._hass.states[entityName];
+        const entity = this._hass?.states[entityName];
         const state = entity ? entity.state : 'unavailable';
 
         if (state === 'on' || state === 'off' || state === 'unlocked' || state === 'locked') {
@@ -260,13 +290,13 @@ class StarlineCard extends HTMLElement {
         return null;
     }
 
-    _getAttr(entity_id, name) {
-        const entityName = this._config.entities[entity_id];
+    _getAttr(entity_id: ConfigEntity, name: string): StateValue | null {
+        const entityName = this._config.entities?.[entity_id];
         if (!entityName) {
             return null;
         }
 
-        const entity = this._hass.states[entityName];
+        const entity = this._hass?.states[entityName];
 
         if (!entity || !entity.attributes.hasOwnProperty(name)) {
             return null;
@@ -276,35 +306,35 @@ class StarlineCard extends HTMLElement {
     }
 
     _setDarkMode() {
-        this.$wrapper.classList.toggle('__dark', this._config.dark);
+        this.$wrapper!.classList.toggle('__dark', !!this._config.dark);
     }
 
     _setHasTitle() {
-        this.$wrapper.classList.toggle('__title', !!this._config.title);
+        this.$wrapper!.classList.toggle('__title', !!this._config.title);
     }
 
     _setAlarmState() {
-        const entity = this._hass.states[this._config.entities.security];
+        const entity = this._hass?.states[this._config.entities!.security];
         const states = entity ? entity.attributes : {};
 
         for (const name in states) {
             if (states.hasOwnProperty(name) && name !== 'friendly_name' && name !== 'icon') {
-                this.$container.classList.toggle('__alarm_' + name, states[name]);
+                this.$container?.classList.toggle('__alarm_' + name, states[name] as boolean);
             }
         }
 
-        this.$container.classList.toggle('__alarm', this._getState('alarm'));
+        this.$container?.classList.toggle('__alarm', this._getState('alarm') as boolean);
     }
 
     _setCarState() {
-        const controls = {
+        const controls: {[key: string]: StateValue | null} = {
             security: this._getState('security'),
             engine: this._getState('engine'),
             out: this._getState('out'),
             webasto: this._getState('webasto')
         };
 
-        const states = {
+        const states: {[key: string]: StateValue | null} = {
             '__arm': controls.security,
             '__key': this._getAttr('engine', 'ignition'),
             '__door': this._getState('door'),
@@ -317,7 +347,7 @@ class StarlineCard extends HTMLElement {
             '__offline': this._getAttr('gsm_lvl', 'online'),
         };
 
-        const icons = {
+        const icons: {[key: string]: StateValue | null} = {
             '__handsfree': this._getState('handsfree'),
             '__neutral': this._getState('neutral'),
             '__ban': this._getState('moving_ban'),
@@ -327,9 +357,9 @@ class StarlineCard extends HTMLElement {
             const state = states[className];
 
             if (className === '__offline') {
-                this.$container.classList.toggle(className, !state);
+                this.$container?.classList.toggle(className, !state);
             } else if (state !== null) {
-                this.$container.classList.toggle(className, state);
+                this.$container?.classList.toggle(className, state as boolean);
             }
         });
 
@@ -337,7 +367,7 @@ class StarlineCard extends HTMLElement {
             const state = icons[className];
 
             if (state !== null) {
-                this.$wrapper.classList.toggle(className, state);
+                this.$wrapper?.classList.toggle(className, state as boolean);
             }
         });
 
@@ -355,65 +385,66 @@ class StarlineCard extends HTMLElement {
     }
 
     _setInfo() {
-        Object.keys(this._info).forEach((key) => {
+        for (const [key, data] of Object.entries(this._info) as [ConfigInfo, UIElement][]) {
             let visible = false;
 
             if (this._config.info.indexOf(key) > -1) {
                 const state = this._getState(key);
                 visible = state !== null;
 
-                if (state !== null && state !== this._info[key].value) {
+                if (state !== null && state !== data.value) {
                     this._info[key].value = state;
-                    this._info[key].element.querySelector('.info-i-cnt').textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+                    const unit = this._getAttr(key, 'unit_of_measurement');
+                    this._info[key].element!.querySelector('.info-i-cnt')!.textContent = `${state} ${unit}`;
                 }
             }
 
-            this._info[key].element.classList.toggle('__hidden', !visible);
-        });
+            this._info[key].element!.classList.toggle('__hidden', !visible);
+        }
 
         const gsm_lvl = this._getState('gsm_lvl');
         if (gsm_lvl !== this._gsm_lvl.value) {
             this._gsm_lvl.value = gsm_lvl;
-            this._gsm_lvl.element.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') : 'mdi:signal-off';
+            this._gsm_lvl.element!.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') as string : 'mdi:signal-off';
         }
     }
 
     _setControls() {
-        this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
-        this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
-        this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
+        this.$controlLeft!.classList.add(`control-icon-${this._config.controls[0]}`);
+        this.$controlCenter!.classList.add(`control-icon-${this._config.controls[1]}`);
+        this.$controlRight!.classList.add(`control-icon-${this._config.controls[2]}`);
     }
 
     _initHandlers() {
-        Object.keys(this._info).forEach((key) => {
-            this._info[key].element.addEventListener('click', () => this._moreInfo(key));
-        });
+        for (const [key, data] of Object.entries(this._info) as [ConfigInfo, UIElement][]) {
+            data.element!.addEventListener('click', () => this._moreInfo(key));
+        }
 
-        this._gsm_lvl.element.addEventListener('click', () => this._moreInfo('gsm_lvl'));
-        this._handsfree.element.addEventListener('click', () => this._moreInfo('handsfree'));
-        this._neutral.element.addEventListener('click', () => this._moreInfo('neutral'));
-        this._moving_ban.element.addEventListener('click', () => this._moreInfo('moving_ban'));
+        this._gsm_lvl.element!.addEventListener('click', () => this._moreInfo('gsm_lvl'));
+        this._handsfree.element!.addEventListener('click', () => this._moreInfo('handsfree'));
+        this._neutral.element!.addEventListener('click', () => this._moreInfo('neutral'));
+        this._moving_ban.element!.addEventListener('click', () => this._moreInfo('moving_ban'));
 
-        this.$car.addEventListener('click', () => this._moreInfo('engine'));
-        this.$security.addEventListener('click', () => this._moreInfo('security'));
+        this.$car!.addEventListener('click', () => this._moreInfo('engine'));
+        this.$security!.addEventListener('click', () => this._moreInfo('security'));
 
-        this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
-        this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
-        this.$controlRight.addEventListener('click', () => this._onClick('right', this.$controlRight));
+        this.$controlLeft!.addEventListener('click', () => this._onClick('left', this.$controlLeft!));
+        this.$controlCenter!.addEventListener('click', () => this._onClick('center', this.$controlCenter!));
+        this.$controlRight!.addEventListener('click', () => this._onClick('right', this.$controlRight!));
     }
 
-    _onClick(position, $element) {
+    _onClick(position: ClickPosition, $element: HTMLElement) {
         this._fireEvent('haptic', 'light');
 
         const _showToast = () => {
-            this.$toast.style.opacity = '1';
+            this.$toast!.style.opacity = '1';
             setTimeout(() => {
-                this.$toast.style.opacity = '0';
+                this.$toast!.style.opacity = '0';
             }, 2000);
         };
 
         const _stopTimeout = () => {
-            clearTimeout(this._clickTimeouts[position]);
+            clearTimeout(this._clickTimeouts[position] as number);
             this._clickTimeouts[position] = null;
         };
 
@@ -438,7 +469,9 @@ class StarlineCard extends HTMLElement {
                     break;
             }
 
-            let entity, event, action;
+            let entity: ConfigEntity;
+            let event: string;
+            let action: string;
             switch (btn) {
                 case 'arm':
                     entity = 'security';
@@ -463,7 +496,7 @@ class StarlineCard extends HTMLElement {
                 case 'horn':
                     entity = 'horn';
                     // TODO: удалить switch когда button будет добавлен в ха
-                    if (this._config.entities[entity].startsWith('button')) {
+                    if (this._config.entities![entity].startsWith('button')) {
                         event = 'button';
                         action = 'press';
                     } else {
@@ -476,8 +509,8 @@ class StarlineCard extends HTMLElement {
             if (entity) {
                 // У "сигнала" нет стейта, поэтому ждем меньше
                 this._startBtnProgress($element, entity === 'horn' ? 5000 : 30000);
-                this._hass.callService(event, action, {
-                    entity_id: this._config.entities[entity]
+                this._hass!.callService(event, action, {
+                    entity_id: this._config.entities![entity]
                 });
             }
         };
@@ -490,47 +523,48 @@ class StarlineCard extends HTMLElement {
         }
     }
 
-    _startBtnProgress($element, timeout) {
+    _startBtnProgress($element: HTMLElement, timeout: number) {
         $element.classList.add('__inprogress');
-        clearTimeout(this._inProgressTimeout);
+        clearTimeout(this._inProgressTimeout as number);
         this._inProgressTimeout = setTimeout(() => this._stopBtnProgress(), timeout);
     }
 
     _stopBtnProgress() {
-        clearTimeout(this._inProgressTimeout);
+        clearTimeout(this._inProgressTimeout as number);
         this._inProgressTimeout = null;
 
-        this.$controlLeft.classList.remove('__inprogress');
-        this.$controlCenter.classList.remove('__inprogress');
-        this.$controlRight.classList.remove('__inprogress');
+        this.$controlLeft!.classList.remove('__inprogress');
+        this.$controlCenter!.classList.remove('__inprogress');
+        this.$controlRight!.classList.remove('__inprogress');
 
         this._fireEvent('haptic', 'success');
     }
 
-    _moreInfo(entity) {
+    _moreInfo(entity: ConfigEntity) {
         this._fireEvent('haptic', 'light');
         this._fireEvent('hass-more-info', {
-            entityId: this._config.entities[entity]
+            entityId: this._config.entities![entity]
         });
     }
 
-    _fireEvent(type, detail) {
+    _fireEvent(type: string, detail: any) {
         const event = new Event(type, {
             bubbles: true,
             cancelable: false,
             composed: true
         });
+        // @ts-ignore
         event.detail = detail || {};
-        this.$wrapper.dispatchEvent(event);
+        this.$wrapper!.dispatchEvent(event);
         return event;
     }
 
     _updateEntitiesConfig() {
-        if (!this._hass.entities) {
+        if (!this._hass) {
             return;
         }
 
-        if (this._config.entities.alarm) {
+        if (this._config.entities?.alarm) {
             // already set
             return;
         }
@@ -541,21 +575,22 @@ class StarlineCard extends HTMLElement {
 
         // Чтобы каждый раз не обходить весь список, сделаем копию и будем удалять элементы
         const entitiesToAdd = {...STARLINE_ENTITIES};
+        this._config.entities = {} as {[key in ConfigEntity]: string};
 
-        const deviceId = this._config.device_id || this._hass.entities[this._config.entity_id].device_id;
+        const deviceId = this._config.device_id || this._hass.entities[this._config.entity_id as string].device_id;
         const deviceEntities = Object.values(this._hass.entities).filter(({device_id}) => device_id === deviceId);
 
         for (const entity of deviceEntities) {
-            for (const [key, data] of Object.entries(entitiesToAdd)) {
+            for (const [key, data] of Object.entries(entitiesToAdd) as [ConfigEntity, any][]) {
                 if (data.regex.test(entity.entity_id)) {
-                    this._config.entities[key] = entity.entity_id;
+                    this._config.entities![key] = entity.entity_id;
                     delete entitiesToAdd[key];
                 }
             }
         }
     }
 
-    setConfig(config) {
+    setConfig(config: Config) {
         this._config.entity_id = config.entity_id;
         this._config.device_id = config.device_id;
         this._config.dark = !!config.dark;
@@ -566,13 +601,13 @@ class StarlineCard extends HTMLElement {
         }
 
         if (config.entities && !config.entity_id && !config.device_id) {
-            for (const [key, data] of Object.entries(STARLINE_ENTITIES)) {
+            for (const [key, data] of Object.entries(STARLINE_ENTITIES) as [ConfigEntity, any][]) {
                 if (data.required && !config.entities[key]) {
                     throw new Error(`You need to define an entity: ${data.name}`);
                 }
             }
 
-            Object.assign(this._config.entities, config.entities);
+            this._config.entities = config.entities;
         }
 
         if (config.controls) {

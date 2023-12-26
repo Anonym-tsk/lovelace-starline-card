@@ -100,28 +100,21 @@ const STARLINE_ENTITIES = {
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
 };
-
 class StarlineCard extends HTMLElement {
     constructor() {
         super();
-
         this._config = {
             controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
             info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
-            entities: {},
-            entity_id: null,
-            device_id: null,
             dark: false
         };
-        this._hass = {};
-
+        this._hass = null;
         this._clickTimeouts = {
             left: null,
             center: null,
             right: null
         };
         this._inProgressTimeout = null;
-
         this._info = {
             balance: {
                 element: null,
@@ -163,31 +156,23 @@ class StarlineCard extends HTMLElement {
             out: null,
             webasto: null
         };
-
         this.$wrapper = null;
         this.$container = null;
-
         this.$car = null;
         this.$security = null;
-
         this.$controlLeft = null;
         this.$controlCenter = null;
         this.$controlRight = null;
-
         this.$toast = null;
     }
-
     set hass(hass) {
         this._hass = hass;
         this._updateEntitiesConfig();
-
         if (!this.$wrapper) {
             this._render();
         }
-
         this._update();
     }
-
     _render() {
         const card = document.createElement('ha-card');
         const style = document.createElement('style');
@@ -585,42 +570,32 @@ class StarlineCard extends HTMLElement {
 `;
         card.appendChild(style);
         this.appendChild(card);
-
         this.$wrapper = card.querySelector('.wrapper');
         this.$container = this.$wrapper.querySelector('.container');
-
         this.$car = this.$container.querySelector('.car-cnt');
         this.$security = this.$container.querySelector('.car-security');
-
         this.$controlLeft = this.$container.querySelector('.control-left');
         this.$controlCenter = this.$container.querySelector('.control-center');
         this.$controlRight = this.$container.querySelector('.control-right');
-
         this._info.balance.element = this.$wrapper.querySelector('.info-balance');
         this._info.battery.element = this.$wrapper.querySelector('.info-battery');
         this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
         this._info.gps.element = this.$wrapper.querySelector('.info-gps');
-
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
         this._handsfree.element = this.$wrapper.querySelector('.handsfree');
         this._neutral.element = this.$wrapper.querySelector('.neutral');
         this._moving_ban.element = this.$wrapper.querySelector('.moving-ban');
-
         this.$toast = this.$wrapper.querySelector('.toast');
-
-        if (this._hass.language === 'ru') {
-            // Ugly?
+        if (this._hass?.language === 'ru') {
             this.$toast.textContent = 'Нажмите дважды для выполнения';
         }
-
         this._setControls();
         this._initHandlers();
         setTimeout(() => {
             this.$wrapper.style.opacity = '1';
         }, 10);
     }
-
     _update() {
         this._setDarkMode();
         this._setHasTitle();
@@ -628,63 +603,48 @@ class StarlineCard extends HTMLElement {
         this._setCarState();
         this._setInfo();
     }
-
     _getState(entity_id) {
-        const entityName = this._config.entities[entity_id];
+        const entityName = this._config.entities?.[entity_id];
         if (!entityName) {
             return null;
         }
-
-        const entity = this._hass.states[entityName];
+        const entity = this._hass?.states[entityName];
         const state = entity ? entity.state : 'unavailable';
-
         if (state === 'on' || state === 'off' || state === 'unlocked' || state === 'locked') {
             return state === 'on' || state === 'locked';
         }
-
         if (state !== 'unavailable') {
             return state;
         }
-
         return null;
     }
-
     _getAttr(entity_id, name) {
-        const entityName = this._config.entities[entity_id];
+        const entityName = this._config.entities?.[entity_id];
         if (!entityName) {
             return null;
         }
-
-        const entity = this._hass.states[entityName];
-
+        const entity = this._hass?.states[entityName];
         if (!entity || !entity.attributes.hasOwnProperty(name)) {
             return null;
         }
-
         return entity.attributes[name];
     }
-
     _setDarkMode() {
-        this.$wrapper.classList.toggle('__dark', this._config.dark);
+        this.$wrapper.classList.toggle('__dark', !!this._config.dark);
     }
-
     _setHasTitle() {
         this.$wrapper.classList.toggle('__title', !!this._config.title);
     }
-
     _setAlarmState() {
-        const entity = this._hass.states[this._config.entities.security];
+        const entity = this._hass?.states[this._config.entities.security];
         const states = entity ? entity.attributes : {};
-
         for (const name in states) {
             if (states.hasOwnProperty(name) && name !== 'friendly_name' && name !== 'icon') {
-                this.$container.classList.toggle('__alarm_' + name, states[name]);
+                this.$container?.classList.toggle('__alarm_' + name, states[name]);
             }
         }
-
-        this.$container.classList.toggle('__alarm', this._getState('alarm'));
+        this.$container?.classList.toggle('__alarm', this._getState('alarm'));
     }
-
     _setCarState() {
         const controls = {
             security: this._getState('security'),
@@ -692,7 +652,6 @@ class StarlineCard extends HTMLElement {
             out: this._getState('out'),
             webasto: this._getState('webasto')
         };
-
         const states = {
             '__arm': controls.security,
             '__key': this._getAttr('engine', 'ignition'),
@@ -705,31 +664,26 @@ class StarlineCard extends HTMLElement {
             '__hbrake': this._getState('hbrake'),
             '__offline': this._getAttr('gsm_lvl', 'online'),
         };
-
         const icons = {
             '__handsfree': this._getState('handsfree'),
             '__neutral': this._getState('neutral'),
             '__ban': this._getState('moving_ban'),
         };
-
         Object.keys(states).forEach((className) => {
             const state = states[className];
-
             if (className === '__offline') {
-                this.$container.classList.toggle(className, !state);
-            } else if (state !== null) {
-                this.$container.classList.toggle(className, state);
+                this.$container?.classList.toggle(className, !state);
+            }
+            else if (state !== null) {
+                this.$container?.classList.toggle(className, state);
             }
         });
-
         Object.keys(icons).forEach((className) => {
             const state = icons[className];
-
             if (state !== null) {
-                this.$wrapper.classList.toggle(className, state);
+                this.$wrapper?.classList.toggle(className, state);
             }
         });
-
         let carStateChanged = false;
         Object.keys(controls).forEach((key) => {
             if (controls[key] !== null && controls[key] !== this._controls[key]) {
@@ -737,82 +691,67 @@ class StarlineCard extends HTMLElement {
                 carStateChanged = true;
             }
         });
-
         if (carStateChanged) {
             this._stopBtnProgress();
         }
     }
-
     _setInfo() {
-        Object.keys(this._info).forEach((key) => {
+        for (const [key, data] of Object.entries(this._info)) {
             let visible = false;
-
             if (this._config.info.indexOf(key) > -1) {
                 const state = this._getState(key);
                 visible = state !== null;
-
-                if (state !== null && state !== this._info[key].value) {
+                if (state !== null && state !== data.value) {
                     this._info[key].value = state;
-                    this._info[key].element.querySelector('.info-i-cnt').textContent = state + ' ' + this._getAttr(key, 'unit_of_measurement');
+                    const unit = this._getAttr(key, 'unit_of_measurement');
+                    this._info[key].element.querySelector('.info-i-cnt').textContent = `${state} ${unit}`;
                 }
             }
-
             this._info[key].element.classList.toggle('__hidden', !visible);
-        });
-
+        }
         const gsm_lvl = this._getState('gsm_lvl');
         if (gsm_lvl !== this._gsm_lvl.value) {
             this._gsm_lvl.value = gsm_lvl;
             this._gsm_lvl.element.icon = gsm_lvl ? this._getAttr('gsm_lvl', 'icon') : 'mdi:signal-off';
         }
     }
-
     _setControls() {
-        this.$controlLeft.classList.add('control-icon-' + this._config.controls[0]);
-        this.$controlCenter.classList.add('control-icon-' + this._config.controls[1]);
-        this.$controlRight.classList.add('control-icon-' + this._config.controls[2]);
+        this.$controlLeft.classList.add(`control-icon-${this._config.controls[0]}`);
+        this.$controlCenter.classList.add(`control-icon-${this._config.controls[1]}`);
+        this.$controlRight.classList.add(`control-icon-${this._config.controls[2]}`);
     }
-
     _initHandlers() {
-        Object.keys(this._info).forEach((key) => {
-            this._info[key].element.addEventListener('click', () => this._moreInfo(key));
-        });
-
+        for (const [key, data] of Object.entries(this._info)) {
+            data.element.addEventListener('click', () => this._moreInfo(key));
+        }
         this._gsm_lvl.element.addEventListener('click', () => this._moreInfo('gsm_lvl'));
         this._handsfree.element.addEventListener('click', () => this._moreInfo('handsfree'));
         this._neutral.element.addEventListener('click', () => this._moreInfo('neutral'));
         this._moving_ban.element.addEventListener('click', () => this._moreInfo('moving_ban'));
-
         this.$car.addEventListener('click', () => this._moreInfo('engine'));
         this.$security.addEventListener('click', () => this._moreInfo('security'));
-
         this.$controlLeft.addEventListener('click', () => this._onClick('left', this.$controlLeft));
         this.$controlCenter.addEventListener('click', () => this._onClick('center', this.$controlCenter));
         this.$controlRight.addEventListener('click', () => this._onClick('right', this.$controlRight));
     }
-
     _onClick(position, $element) {
         this._fireEvent('haptic', 'light');
-
         const _showToast = () => {
             this.$toast.style.opacity = '1';
             setTimeout(() => {
                 this.$toast.style.opacity = '0';
             }, 2000);
         };
-
         const _stopTimeout = () => {
             clearTimeout(this._clickTimeouts[position]);
             this._clickTimeouts[position] = null;
         };
-
         const _startTimeout = () => {
             this._clickTimeouts[position] = setTimeout(() => {
                 _stopTimeout();
                 _showToast();
             }, 500);
         };
-
         const _run = () => {
             let btn = null;
             switch (position) {
@@ -826,8 +765,9 @@ class StarlineCard extends HTMLElement {
                     btn = this._config.controls[2];
                     break;
             }
-
-            let entity, event, action;
+            let entity;
+            let event;
+            let action;
             switch (btn) {
                 case 'arm':
                     entity = 'security';
@@ -851,58 +791,50 @@ class StarlineCard extends HTMLElement {
                     break;
                 case 'horn':
                     entity = 'horn';
-                    // TODO: удалить switch когда button будет добавлен в ха
                     if (this._config.entities[entity].startsWith('button')) {
                         event = 'button';
                         action = 'press';
-                    } else {
+                    }
+                    else {
                         event = 'switch';
                         action = 'turn_on';
                     }
                     break;
             }
-
             if (entity) {
-                // У "сигнала" нет стейта, поэтому ждем меньше
                 this._startBtnProgress($element, entity === 'horn' ? 5000 : 30000);
                 this._hass.callService(event, action, {
                     entity_id: this._config.entities[entity]
                 });
             }
         };
-
         if (this._clickTimeouts[position]) {
             _stopTimeout();
             _run();
-        } else {
+        }
+        else {
             _startTimeout();
         }
     }
-
     _startBtnProgress($element, timeout) {
         $element.classList.add('__inprogress');
         clearTimeout(this._inProgressTimeout);
         this._inProgressTimeout = setTimeout(() => this._stopBtnProgress(), timeout);
     }
-
     _stopBtnProgress() {
         clearTimeout(this._inProgressTimeout);
         this._inProgressTimeout = null;
-
         this.$controlLeft.classList.remove('__inprogress');
         this.$controlCenter.classList.remove('__inprogress');
         this.$controlRight.classList.remove('__inprogress');
-
         this._fireEvent('haptic', 'success');
     }
-
     _moreInfo(entity) {
         this._fireEvent('haptic', 'light');
         this._fireEvent('hass-more-info', {
             entityId: this._config.entities[entity]
         });
     }
-
     _fireEvent(type, detail) {
         const event = new Event(type, {
             bubbles: true,
@@ -913,27 +845,20 @@ class StarlineCard extends HTMLElement {
         this.$wrapper.dispatchEvent(event);
         return event;
     }
-
     _updateEntitiesConfig() {
-        if (!this._hass.entities) {
+        if (!this._hass) {
             return;
         }
-
-        if (this._config.entities.alarm) {
-            // already set
+        if (this._config.entities?.alarm) {
             return;
         }
-
         if (!this._config.entity_id && !this._config.device_id) {
             return;
         }
-
-        // Чтобы каждый раз не обходить весь список, сделаем копию и будем удалять элементы
-        const entitiesToAdd = {...STARLINE_ENTITIES};
-
+        const entitiesToAdd = { ...STARLINE_ENTITIES };
+        this._config.entities = {};
         const deviceId = this._config.device_id || this._hass.entities[this._config.entity_id].device_id;
-        const deviceEntities = Object.values(this._hass.entities).filter(({device_id}) => device_id === deviceId);
-
+        const deviceEntities = Object.values(this._hass.entities).filter(({ device_id }) => device_id === deviceId);
         for (const entity of deviceEntities) {
             for (const [key, data] of Object.entries(entitiesToAdd)) {
                 if (data.regex.test(entity.entity_id)) {
@@ -943,47 +868,38 @@ class StarlineCard extends HTMLElement {
             }
         }
     }
-
     setConfig(config) {
         this._config.entity_id = config.entity_id;
         this._config.device_id = config.device_id;
         this._config.dark = !!config.dark;
         this._config.title = config.title;
-
         if (!config.entity_id && !config.device_id && !config.entities) {
             throw new Error(`You need to define entity_id, device_id or entities`);
         }
-
         if (config.entities && !config.entity_id && !config.device_id) {
             for (const [key, data] of Object.entries(STARLINE_ENTITIES)) {
                 if (data.required && !config.entities[key]) {
                     throw new Error(`You need to define an entity: ${data.name}`);
                 }
             }
-
-            Object.assign(this._config.entities, config.entities);
+            this._config.entities = config.entities;
         }
-
         if (config.controls) {
             Object.assign(this._config.controls, config.controls);
         }
-
         if (config.info) {
             this._config.info = config.info;
         }
     }
-
     getCardSize() {
         return 3;
     }
 }
-
 customElements.define('starline-card', StarlineCard);
-
 window.customCards = window.customCards || [];
 window.customCards.push({
     type: 'starline-card',
     name: 'StarLine',
-    description: "Amazing card for Starline integration", // Optional
+    description: "Amazing card for Starline integration",
     documentationURL: "https://github.com/Anonym-tsk/lovelace-starline-card",
 });

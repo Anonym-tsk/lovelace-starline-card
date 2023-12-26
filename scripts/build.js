@@ -29,8 +29,6 @@ fs.emptyDirSync('./tmp/assets');
             return;
         }
 
-        fs.copySync('./src/starline-card.js', './tmp/starline-card.js');
-
         replace.sync({
             files: './tmp/starline-card.js',
             from: '{%css%}',
