@@ -1,1 +1,1 @@
-/Users/nikolay.vasilchuk/Projects/lovelace-starline-card/info.md
+info.md
