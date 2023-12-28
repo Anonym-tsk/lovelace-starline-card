@@ -268,7 +268,9 @@ export class StarlineCard extends HTMLElement {
 
                 if (state !== null && state !== data.value) {
                     this._info[key].value = state;
-                    const unit = this._getAttr(key, 'unit_of_measurement');
+                    // Не показываем 'satellites' для спутников
+                    const unit = key === 'gps' ? '' :
+                        this._getAttr(key, 'unit_of_measurement');
                     this._info[key].element!.querySelector('.info-i-cnt')!.textContent = `${state} ${unit}`;
                 }
             }

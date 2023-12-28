@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Tue, 26 Dec 2023 13:15:18 GMT
+ * Thu, 28 Dec 2023 08:54:08 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -708,7 +708,8 @@ class StarlineCard extends HTMLElement {
                 visible = state !== null;
                 if (state !== null && state !== data.value) {
                     this._info[key].value = state;
-                    const unit = this._getAttr(key, 'unit_of_measurement');
+                    const unit = key === 'gps' ? '' :
+                        this._getAttr(key, 'unit_of_measurement');
                     this._info[key].element.querySelector('.info-i-cnt').textContent = `${state} ${unit}`;
                 }
             }
