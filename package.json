@@ -28,6 +28,7 @@
     "replace-in-file": "^7.0.2",
     "rollup": "^4.9.1",
     "rollup-plugin-typescript2": "^0.36.0",
+    "temp-dir": "^3.0.0",
     "typescript": "^5.3.3"
   }
 }
