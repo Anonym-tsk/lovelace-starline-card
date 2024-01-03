@@ -31,6 +31,11 @@ export const STARLINE_ENTITIES: {[key in ConfigEntity]: {name: string, required:
         required: true,
         regex: /^sensor\.(.+)_gsm_signal(_[0-9]+)?$/,
     },
+    'fuel': {
+        name: 'Fuel volume',
+        required: false,
+        regex: /^sensor\.(.+)_fuel_volume(_[0-9]+)?$/,
+    },
     'hbrake': {
         name: 'Hand Brake',
         required: false,

@@ -26,7 +26,7 @@ resources:
 | title               | False    | _string_ | The heading to display. Don't set to hide header
 | dark                | False    | _bool_   | Dark mode
 | controls            | False    | _list_   | List of used controls (select 3 from `arm`, `ign`, `horn`, `webasto`, `out`)
-| info                | False    | _list_   | List of information tiles (allowed values: `balance`, `battery`, `ctemp`, `etemp`, `gps`)
+| info                | False    | _list_   | List of information tiles (allowed values: `balance`, `battery`, `ctemp`, `etemp`, `gps`, `fuel`)
 | entity_id           | False    | _string_ | Automatic card configuration by one entity_id (e.g. `device_tracker.audi_location`)
 | device_id           | False    | _string_ | Automatic card configuration by device_id
 | entities            | False    | _map_    | Map of used entities (see below)
@@ -39,6 +39,7 @@ resources:
 | entities.etemp      | True     | _string_ | Engine temperature _sensor_ entity_id
 | entities.gsm_lvl    | True     | _string_ | GSM signal level _sensor_ entity_id
 | entities.gps        | False    | _string_ | GPS satellites count _sensor_ entity_id
+| entities.fuel       | False    | _string_ | Fuel volume _sensor_ entity_id
 | entities.hbrake     | False    | _string_ | Hand brake _binary_sensor_ entity_id
 | entities.hood       | True     | _string_ | Hood _binary_sensor_ entity_id
 | entities.horn       | True     | _string_ | Horn _button_ entity_id
@@ -105,6 +106,7 @@ entities:
   etemp: sensor.audi_engine_temperature
   gsm_lvl: sensor.audi_gsm_signal
   gps: sensor.audi_gps_satellites
+  fuel: sensor.audi_fuel_volume
   hbrake: binary_sensor.audi_hand_brake
   hood: binary_sensor.audi_hood
   horn: switch.audi_horn

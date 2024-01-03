@@ -1,9 +1,9 @@
 export type ConfigEntity = 'battery' | 'balance' | 'ctemp' | 'etemp'
-    | 'gps' | 'gsm_lvl' | 'hbrake' | 'hood' | 'horn' | 'trunk'
+    | 'gps' | 'gsm_lvl' | 'fuel' | 'hbrake' | 'hood' | 'horn' | 'trunk'
     | 'alarm' | 'door' | 'engine' | 'webasto' | 'out' | 'security'
     | 'location' | 'handsfree' | 'neutral' | 'moving_ban';
 
-export type ConfigInfo = 'balance' | 'battery' | 'ctemp' | 'etemp' | 'gps'; // TODO: Extract?
+export type ConfigInfo = 'balance' | 'battery' | 'ctemp' | 'etemp' | 'gps' | 'fuel'; // TODO: Extract?
 
 export type ConfigControls = 'arm' | 'ign' | 'horn' | 'webasto' | 'out'; // TODO: Extract?
 

@@ -38,6 +38,10 @@ export class StarlineCard extends HTMLElement {
         gps: {
             element: null,
             value: null
+        },
+        fuel: {
+            element: null,
+            value: null
         }
     };
 
@@ -116,6 +120,7 @@ export class StarlineCard extends HTMLElement {
         this._info.ctemp.element = this.$wrapper.querySelector<HTMLElement>('.info-inner')!;
         this._info.etemp.element = this.$wrapper.querySelector<HTMLElement>('.info-engine'!);
         this._info.gps.element = this.$wrapper.querySelector<HTMLElement>('.info-gps')!;
+        this._info.fuel.element = this.$wrapper.querySelector<HTMLElement>('.info-fuel')!;
 
         this._gsm_lvl.element = this.$wrapper.querySelector<HTMLElement>('.gsm-lvl')!;
         this._handsfree.element = this.$wrapper.querySelector<HTMLElement>('.handsfree')!;
