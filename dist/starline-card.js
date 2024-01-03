@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Thu, 28 Dec 2023 08:54:08 GMT
+ * Wed, 03 Jan 2024 14:09:59 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -32,6 +32,11 @@ const STARLINE_ENTITIES = {
         name: 'GSM Signal Level',
         required: true,
         regex: /^sensor\.(.+)_gsm_signal(_[0-9]+)?$/,
+    },
+    'fuel': {
+        name: 'Fuel volume',
+        required: false,
+        regex: /^sensor\.(.+)_fuel_volume(_[0-9]+)?$/,
     },
     'hbrake': {
         name: 'Hand Brake',
@@ -138,6 +143,10 @@ class StarlineCard extends HTMLElement {
                 value: null
             },
             gps: {
+                element: null,
+                value: null
+            },
+            fuel: {
                 element: null,
                 value: null
             }
@@ -565,6 +574,10 @@ class StarlineCard extends HTMLElement {
             <ha-icon icon="mdi:satellite-variant"></ha-icon>
             <span class="info-i-cnt"></span>
         </div>
+        <div class="info-i info-fuel">
+            <ha-icon icon="mdi:fuel"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
     </div>
 
     <ha-icon class="gsm-lvl icon-btn" icon="mdi:signal-cellular-outline"></ha-icon>
@@ -587,6 +600,7 @@ class StarlineCard extends HTMLElement {
         this._info.ctemp.element = this.$wrapper.querySelector('.info-inner');
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
         this._info.gps.element = this.$wrapper.querySelector('.info-gps');
+        this._info.fuel.element = this.$wrapper.querySelector('.info-fuel');
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
         this._handsfree.element = this.$wrapper.querySelector('.handsfree');
         this._neutral.element = this.$wrapper.querySelector('.neutral');
