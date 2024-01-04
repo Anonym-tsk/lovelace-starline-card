@@ -302,7 +302,7 @@ export class StarlineCard extends HTMLElement {
         // TODO: Переделать, чтобы в _setInfoState не нужно было проверять видимость (а лучше вообще лишние элементы удалить)
         const $cnt = this._info.balance.element!.parentNode!;
         for (const name of this._config.info) {
-          const $item = $cnt.querySelector(`info-${name}`)!;
+          const $item = $cnt.querySelector(`.info-${name}`)!;
           $cnt.appendChild($item);
         }
     }

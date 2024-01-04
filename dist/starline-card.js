@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Thu, 04 Jan 2024 11:57:16 GMT
+ * Thu, 04 Jan 2024 12:00:03 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -744,7 +744,7 @@ class StarlineCard extends HTMLElement {
     _setInfo() {
         const $cnt = this._info.balance.element.parentNode;
         for (const name of this._config.info) {
-            const $item = $cnt.querySelector(`info-${name}`);
+            const $item = $cnt.querySelector(`.info-${name}`);
             $cnt.appendChild($item);
         }
     }
