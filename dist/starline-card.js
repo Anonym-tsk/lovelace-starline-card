@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Wed, 03 Jan 2024 14:09:59 GMT
+ * Thu, 04 Jan 2024 11:57:16 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -609,18 +609,19 @@ class StarlineCard extends HTMLElement {
         if (this._hass?.language === 'ru') {
             this.$toast.textContent = 'Нажмите дважды для выполнения';
         }
+        this._setDarkMode();
+        this._setHasTitle();
         this._setControls();
+        this._setInfo();
         this._initHandlers();
         setTimeout(() => {
             this.$wrapper.style.opacity = '1';
         }, 10);
     }
     _update() {
-        this._setDarkMode();
-        this._setHasTitle();
         this._setAlarmState();
         this._setCarState();
-        this._setInfo();
+        this._setInfoState();
     }
     _getState(entity_id) {
         const entityName = this._config.entities?.[entity_id];
@@ -714,7 +715,7 @@ class StarlineCard extends HTMLElement {
             this._stopBtnProgress();
         }
     }
-    _setInfo() {
+    _setInfoState() {
         for (const [key, data] of Object.entries(this._info)) {
             let visible = false;
             if (this._config.info.indexOf(key) > -1) {
@@ -739,6 +740,13 @@ class StarlineCard extends HTMLElement {
         this.$controlLeft.classList.add(`control-icon-${this._config.controls[0]}`);
         this.$controlCenter.classList.add(`control-icon-${this._config.controls[1]}`);
         this.$controlRight.classList.add(`control-icon-${this._config.controls[2]}`);
+    }
+    _setInfo() {
+        const $cnt = this._info.balance.element.parentNode;
+        for (const name of this._config.info) {
+            const $item = $cnt.querySelector(`info-${name}`);
+            $cnt.appendChild($item);
+        }
     }
     _initHandlers() {
         for (const [key, data] of Object.entries(this._info)) {

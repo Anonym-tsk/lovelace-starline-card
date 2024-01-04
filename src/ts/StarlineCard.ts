@@ -134,7 +134,10 @@ export class StarlineCard extends HTMLElement {
             this.$toast.textContent = 'Нажмите дважды для выполнения';
         }
 
+        this._setDarkMode();
+        this._setHasTitle();
         this._setControls();
+        this._setInfo();
         this._initHandlers();
         setTimeout(() => {
             this.$wrapper!.style.opacity = '1';
@@ -142,11 +145,9 @@ export class StarlineCard extends HTMLElement {
     }
 
     _update() {
-        this._setDarkMode();
-        this._setHasTitle();
         this._setAlarmState();
         this._setCarState();
-        this._setInfo();
+        this._setInfoState();
     }
 
     _getState(entity_id: ConfigEntity): StateValue | null {
@@ -263,7 +264,7 @@ export class StarlineCard extends HTMLElement {
         }
     }
 
-    _setInfo() {
+    _setInfoState() {
         for (const [key, data] of Object.entries(this._info) as [ConfigInfo, UIElement][]) {
             let visible = false;
 
@@ -294,6 +295,16 @@ export class StarlineCard extends HTMLElement {
         this.$controlLeft!.classList.add(`control-icon-${this._config.controls[0]}`);
         this.$controlCenter!.classList.add(`control-icon-${this._config.controls[1]}`);
         this.$controlRight!.classList.add(`control-icon-${this._config.controls[2]}`);
+    }
+
+    _setInfo() {
+        // Сортируем info
+        // TODO: Переделать, чтобы в _setInfoState не нужно было проверять видимость (а лучше вообще лишние элементы удалить)
+        const $cnt = this._info.balance.element!.parentNode!;
+        for (const name of this._config.info) {
+          const $item = $cnt.querySelector(`info-${name}`)!;
+          $cnt.appendChild($item);
+        }
     }
 
     _initHandlers() {
