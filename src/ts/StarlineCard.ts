@@ -4,7 +4,7 @@ import type {ClickPosition, Config, ConfigEntity, ConfigInfo, UIElement} from '.
 export class StarlineCard extends HTMLElement {
     private _config: Config = {
         controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
-        info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
+        info: ['balance', 'battery', 'ctemp', 'etemp', 'gps', 'mileage'],
         dark: false
     };
 
@@ -40,6 +40,10 @@ export class StarlineCard extends HTMLElement {
             value: null
         },
         fuel: {
+            element: null,
+            value: null
+        },
+        mileage: {
             element: null,
             value: null
         }
@@ -121,6 +125,7 @@ export class StarlineCard extends HTMLElement {
         this._info.etemp.element = this.$wrapper.querySelector<HTMLElement>('.info-engine'!);
         this._info.gps.element = this.$wrapper.querySelector<HTMLElement>('.info-gps')!;
         this._info.fuel.element = this.$wrapper.querySelector<HTMLElement>('.info-fuel')!;
+        this._info.mileage.element = this.$wrapper.querySelector<HTMLElement>('.info-mileage')!;
 
         this._gsm_lvl.element = this.$wrapper.querySelector<HTMLElement>('.gsm-lvl')!;
         this._handsfree.element = this.$wrapper.querySelector<HTMLElement>('.handsfree')!;

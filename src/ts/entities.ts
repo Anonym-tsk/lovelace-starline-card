@@ -106,4 +106,9 @@ export const STARLINE_ENTITIES: {[key in ConfigEntity]: {name: string, required:
         required: false,
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
+    'mileage': {
+        name: 'Mileage',
+        required: false,
+        regex: /^sensor\.(.+)_mileage(_[0-9]+)?$/,
+    },
 };
