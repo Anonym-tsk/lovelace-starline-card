@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Thu, 04 Jan 2024 15:06:19 GMT
+ * Tue, 09 Jan 2024 17:12:43 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -108,6 +108,11 @@ const STARLINE_ENTITIES = {
         required: false,
         regex: /^binary_sensor\.(.+)_moving_ban(_[0-9]+)?$/,
     },
+    'mileage': {
+        name: 'Mileage',
+        required: false,
+        regex: /^sensor\.(.+)_mileage(_[0-9]+)?$/,
+    },
 };
 
 class StarlineCard extends HTMLElement {
@@ -115,7 +120,7 @@ class StarlineCard extends HTMLElement {
         super();
         this._config = {
             controls: ['arm', 'ign', 'horn', 'webasto', 'out'],
-            info: ['balance', 'battery', 'ctemp', 'etemp', 'gps'],
+            info: ['balance', 'battery', 'ctemp', 'etemp', 'gps', 'mileage'],
             dark: false
         };
         this._hass = null;
@@ -147,6 +152,10 @@ class StarlineCard extends HTMLElement {
                 value: null
             },
             fuel: {
+                element: null,
+                value: null
+            },
+            mileage: {
                 element: null,
                 value: null
             }
@@ -578,6 +587,10 @@ class StarlineCard extends HTMLElement {
             <ha-icon icon="mdi:fuel"></ha-icon>
             <span class="info-i-cnt"></span>
         </div>
+        <div class="info-i info-mileage">
+            <ha-icon icon="mdi:counter"></ha-icon>
+            <span class="info-i-cnt"></span>
+        </div>
     </div>
 
     <ha-icon class="gsm-lvl icon-btn" icon="mdi:signal-cellular-outline"></ha-icon>
@@ -601,6 +614,7 @@ class StarlineCard extends HTMLElement {
         this._info.etemp.element = this.$wrapper.querySelector('.info-engine');
         this._info.gps.element = this.$wrapper.querySelector('.info-gps');
         this._info.fuel.element = this.$wrapper.querySelector('.info-fuel');
+        this._info.mileage.element = this.$wrapper.querySelector('.info-mileage');
         this._gsm_lvl.element = this.$wrapper.querySelector('.gsm-lvl');
         this._handsfree.element = this.$wrapper.querySelector('.handsfree');
         this._neutral.element = this.$wrapper.querySelector('.neutral');
