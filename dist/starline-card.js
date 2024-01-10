@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Tue, 09 Jan 2024 17:12:43 GMT
+ * Wed, 10 Jan 2024 14:18:43 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -514,6 +514,8 @@ class StarlineCard extends HTMLElement {
 
 .__ban .moving-ban { display: inline-block; }
 
+.version { position: absolute; bottom: 5px; right: 5px; opacity: .3; font-size: .7em; line-height: .7em; }
+
 .wrapper { overflow: hidden; position: relative; height: 270px; padding: 20px 16px 0 16px; opacity: 0; transition: opacity .1s linear; font-size: 15px; line-height: 20px; color: #00aeef; }
 
 .wrapper.__dark { color: #fff; }
@@ -522,7 +524,7 @@ class StarlineCard extends HTMLElement {
 
 .container { position: relative; margin: 0 auto; }
 `;
-        card.innerHTML = `<div class="wrapper">
+        card.innerHTML = `<div class="version">1.2.1</div><div class="wrapper">
     <div class="container">
         <div class="car">
             <div class="car-cnt">
