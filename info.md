@@ -1,12 +1,19 @@
-# Lovelace StarLine card
+# Home Assistant StarLine card
 
-Special card for Home Assistant [StarLine integration](https://www.home-assistant.io/integrations/starline/)
+[![GitHub Release][releases-shield]][releases]
+[![GitHub Activity][commits-shield]][commits]
+[![License][license-shield]](LICENSE)
+[![hacs][hacsbadge]][hacs]
+
+Amazing card for Home Assistant [StarLine integration](https://www.home-assistant.io/integrations/starline/)
 
 <img src='https://raw.githubusercontent.com/Anonym-tsk/lovelace-starline-card/master/screenshots/white.png' /> <img src='https://raw.githubusercontent.com/Anonym-tsk/lovelace-starline-card/master/screenshots/dark.png' />
 
 ## Installation
 
-Use [HACS](https://github.com/custom-components/hacs) to install this module.
+Use [HACS][hacs] to install this module.
+
+[![Open your Home Assistant instance and open a repository inside the Home Assistant Community Store.](https://my.home-assistant.io/badges/hacs_repository.svg)](https://my.home-assistant.io/redirect/hacs_repository/?owner=Anonym-tsk&repository=lovelace-starline-card&category=frontend)
 
 ## Manual installation
 
@@ -127,3 +134,12 @@ entities:
 Enjoy my work? Help me out for a couple of :beers: or a :coffee:!
 
 [![coffee](https://www.buymeacoffee.com/assets/img/custom_images/black_img.png)](https://yoomoney.ru/to/410019180291197)
+
+<!---->
+[commits-shield]: https://img.shields.io/github/commit-activity/y/Anonym-tsk/lovelace-starline-card.svg?style=for-the-badge
+[commits]: https://github.com/Anonym-tsk/lovelace-starline-card/commits/master
+[hacs]: https://github.com/hacs/integration
+[hacsbadge]: https://img.shields.io/badge/HACS-Default-41BDF5.svg?style=for-the-badge
+[license-shield]: https://img.shields.io/github/license/Anonym-tsk/lovelace-starline-card.svg?style=for-the-badge
+[releases-shield]: https://img.shields.io/github/release/Anonym-tsk/lovelace-starline-card.svg?style=for-the-badge
+[releases]: https://github.com/Anonym-tsk/lovelace-starline-card/releases
