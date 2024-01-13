@@ -1,20 +1,48 @@
 declare type StateValue = number | string | boolean;
 
-interface EntityState {
-    state: StateValue;
-    attributes: Record<string, StateValue>;
-}
-
 interface Entity {
     entity_id: string;
     device_id: string;
 }
 
+type Context = {
+  id: string;
+  user_id: string | null;
+  parent_id: string | null;
+};
+
+type HassEntityBase = {
+  entity_id: string;
+  state: string;
+  last_changed: string;
+  last_updated: string;
+  attributes: HassEntityAttributeBase;
+  context: Context;
+};
+
+type HassEntityAttributeBase = {
+  friendly_name?: string;
+  unit_of_measurement?: string;
+  icon?: string;
+  entity_picture?: string;
+  supported_features?: number;
+  hidden?: boolean;
+  assumed_state?: boolean;
+  device_class?: string;
+  state_class?: string;
+  restored?: boolean;
+};
+
+type HassEntity = HassEntityBase & {
+  attributes: { [key: string]: any };
+};
+
 interface Hass {
     language: string;
-    states: Record<string, EntityState>;
+    states: Record<string, HassEntity>;
     entities: Record<string, Entity>;
     callService: (event: string, action: string, data: { [key: string]: StateValue }) => void;
+    formatEntityState: (stateObj: HassEntity, state?: string) => '',
 }
 
 interface CustomCard {
