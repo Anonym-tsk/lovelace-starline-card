@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Fri, 12 Jan 2024 12:38:44 GMT
+ * Sat, 13 Jan 2024 13:10:58 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
@@ -654,6 +654,13 @@ class StarlineCard extends HTMLElement {
         }
         return null;
     }
+    _getStateObject(entity_id) {
+        const entityName = this._config.entities?.[entity_id];
+        if (!entityName || !this._hass) {
+            return null;
+        }
+        return this._hass.states[entityName];
+    }
     _getAttr(entity_id, name) {
         const entityName = this._config.entities?.[entity_id];
         if (!entityName) {
@@ -737,11 +744,13 @@ class StarlineCard extends HTMLElement {
             if (this._config.info.indexOf(key) > -1) {
                 const state = this._getState(key);
                 visible = state !== null;
-                if (state !== null && state !== data.value) {
+                if (state !== null && state !== data.value && this._hass) {
                     this._info[key].value = state;
-                    const unit = key === 'gps' ? '' :
-                        this._getAttr(key, 'unit_of_measurement');
-                    this._info[key].element.querySelector('.info-i-cnt').textContent = `${state} ${unit}`;
+                    const stateObj = this._getStateObject(key);
+                    if (key === 'gps') {
+                        stateObj.attributes.unit_of_measurement = '';
+                    }
+                    this._info[key].element.querySelector('.info-i-cnt').textContent = this._hass.formatEntityState(stateObj);
                 }
             }
             this._info[key].element.classList.toggle('__hidden', !visible);
