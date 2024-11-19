@@ -2,7 +2,7 @@ import * as sass from 'node-sass';
 import * as b64img from 'css-b64-images'
 import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
-import replace from 'replace-in-file';
+import { replaceInFileSync } from 'replace-in-file';
 import fs from 'fs-extra';
 import pkg from "../package.json" assert { type: 'json' };
 
@@ -30,7 +30,7 @@ fs.emptyDirSync('./tmp/assets');
             return;
         }
 
-        replace.sync({
+        replaceInFileSync({
             files: './tmp/starline-card.js',
             from: '{%css%}',
             to: css,
@@ -39,7 +39,7 @@ fs.emptyDirSync('./tmp/assets');
         fs.readFile('./src/starline.html', 'utf8', function(err, contents) {
             const versionTag = `<div class="version">${pkg.version}</div>`;
 
-            replace.sync({
+            replaceInFileSync({
                 files: './tmp/starline-card.js',
                 from: '{%html%}',
                 to: versionTag + contents,
