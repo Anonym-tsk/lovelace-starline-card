@@ -1,6 +1,6 @@
 /**
  * lovelace-starline-card v1.2.1
- * Fri, 18 Jul 2025 15:36:03 GMT
+ * Fri, 18 Jul 2025 16:00:38 GMT
  */
 const STARLINE_ENTITIES = {
     'battery': {
