@@ -1,4 +1,4 @@
-@import 'animations'
+@use 'animations'
 
 @mixin button-bg($on: '')
     border: 3px solid #b0c80c
@@ -84,7 +84,7 @@ $side-bg-width: 60px
 .control-right
     width: $side-size
     height: $side-size
-    top: ($center-size - $side-size) / 2
+    top: ($center-size - $side-size) * 0.5
 
 .control-icon-arm
     @include button-icon('car_control_icon_arm_start')

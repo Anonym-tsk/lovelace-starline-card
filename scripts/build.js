@@ -1,4 +1,4 @@
-import * as sass from 'node-sass';
+import * as sass from 'sass';
 import * as b64img from 'css-b64-images'
 import imagemin from 'imagemin';
 import imageminPngquant from 'imagemin-pngquant';
@@ -19,10 +19,7 @@ fs.emptyDirSync('./tmp/assets');
         ]
     });
 
-    var result = sass.renderSync({
-        file: './src/starline.sass',
-        outputStyle: 'compact'
-    });
+    const result = sass.compile('./src/starline.sass', { style: 'compressed' });
 
     b64img.fromString(result.css, './tmp/', null, {maxSize: 1024 * 32}, function(err, css) {
         if (err) {
