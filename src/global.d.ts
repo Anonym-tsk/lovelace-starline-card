@@ -1,9 +1,18 @@
 declare type StateValue = number | string | boolean;
 
 interface Entity {
-    entity_id: string;
-    device_id: string;
-}
+  entity_id: string;
+  name?: string;
+  icon?: string;
+  device_id?: string;
+  area_id?: string;
+  labels: string[];
+  hidden?: boolean;
+  entity_category?: EntityCategory;
+  translation_key?: string;
+  platform?: string;
+  display_precision?: number;
+  has_entity_name?: boolean;}
 
 type Context = {
   id: string;

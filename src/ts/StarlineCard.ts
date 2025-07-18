@@ -295,11 +295,8 @@ export class StarlineCard extends HTMLElement {
                         stateObj.attributes.unit_of_measurement = '';
                     }
 
-                    const numState = Number(stateObj.state);
-                    this._info[key].element!.querySelector('.info-i-cnt')!.textContent = this._hass.formatEntityState(
-                        stateObj,
-                        isFinite(numState) ? String(Math.round(numState)) : stateObj.state
-                    );
+                    this._hass.entities[stateObj.entity_id].display_precision = 0;
+                    this._info[key].element!.querySelector('.info-i-cnt')!.textContent = this._hass.formatEntityState(stateObj);
                 }
             }
 
