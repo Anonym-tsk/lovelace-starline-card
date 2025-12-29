@@ -1,0 +1,9 @@
+root = true
+[*]
+indent_style = space
+indent_size = 2
+end_of_line = lf
+insert_final_newline = true
+ij_typescript_use_double_quotes = false
+ij_typescript_force_quote_style = true
+ij_typescript_spaces_within_imports = true

@@ -295,7 +295,6 @@ export class StarlineCard extends HTMLElement {
                         stateObj.attributes.unit_of_measurement = '';
                     }
 
-                    this._hass.entities[stateObj.entity_id].display_precision = 0;
                     this._info[key].element!.querySelector('.info-i-cnt')!.textContent = this._hass.formatEntityState(stateObj);
                 }
             }
@@ -362,7 +361,7 @@ export class StarlineCard extends HTMLElement {
         };
 
         const _startTimeout = () => {
-            this._clickTimeouts[position] = setTimeout(() => {
+            this._clickTimeouts[position] = window.setTimeout(() => {
                 _stopTimeout();
                 _showToast();
             }, 500);
@@ -439,7 +438,7 @@ export class StarlineCard extends HTMLElement {
     _startBtnProgress($element: HTMLElement, timeout: number) {
         $element.classList.add('__inprogress');
         clearTimeout(this._inProgressTimeout as number);
-        this._inProgressTimeout = setTimeout(() => this._stopBtnProgress(), timeout);
+        this._inProgressTimeout = window.setTimeout(() => this._stopBtnProgress(), timeout);
     }
 
     _stopBtnProgress() {
