@@ -29,9 +29,9 @@ jobs:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
     - run: npm ci
-    - run: npm run build --if-present
+    - run: npm --no-git-tag-version version patch
     - uses: stefanzweifel/git-auto-commit-action@v5
       with:
-        commit_message: Build master dist
+        commit_message: Release build
         commit_options: '--no-verify --signoff'
-        file_pattern: 'dist/*.js'
+        file_pattern: 'package.json package-lock.json dist/*.js'

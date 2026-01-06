@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "start": "rollup -cw",
-    "build": "rollup -c"
+    "build": "rollup -c",
+    "version": "npm run build --if-present"
   },
   "repository": {
     "type": "git",
