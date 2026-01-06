@@ -181,7 +181,8 @@ export class StarlineCard extends HTMLElement {
             return null;
         }
 
-        return this._hass.states[entityName];
+        const stateObj = this._hass.states[entityName];
+        return stateObj ? {...stateObj, attributes: {...stateObj.attributes}} : null;
     }
 
     _getAttr(entity_id: ConfigEntity, name: string): StateValue | null {
@@ -289,7 +290,11 @@ export class StarlineCard extends HTMLElement {
                 if (state !== null && state !== data.value && this._hass) {
                     this._info[key].value = state;
 
-                    const stateObj = this._getStateObject(key)!;
+                    const stateObj = this._getStateObject(key);
+                    if (!stateObj) {
+                      continue;
+                    }
+
                     if (key === 'gps') {
                         // Не показываем 'satellites' для спутников
                         stateObj.attributes.unit_of_measurement = '';
