@@ -28,7 +28,7 @@
     "imagemin": "^9.0.1",
     "imagemin-pngquant": "^10.0.0",
     "replace-in-file": "^8.4.0",
-    "rollup": "^4.54.0",
+    "rollup": "^4.59.0",
     "rollup-plugin-typescript2": "^0.36.0",
     "sass": "^1.89.2",
     "temp-dir": "^3.0.0",
